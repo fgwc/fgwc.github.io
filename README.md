@@ -1,2 +1,2 @@
 # fgwc.github.io
-Personal website and curriculum vitae.
+Personal website for curriculum vitae and project portfolio.
