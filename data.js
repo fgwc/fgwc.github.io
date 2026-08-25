@@ -52,7 +52,7 @@ const portfolioData = {
   ],
   skills: [
     { category: "Programming Languages", items: "Python, MATLAB, C++, Java" },
-    { category: "Simulation Tools", items: "COMSOL Multiphysics, Ansys Electronics Desktop (AEDT: HFSS, Icepak), Keysight Advanced Design System (ADS)" },
+    { category: "Simulation Tools", items: "COMSOL Multiphysics, Ansys Electronics Desktop (AEDT), Ansys HFSS, Ansys Icepak, Keysight Advanced Design System (ADS)" },
     { category: "Modeling/Numerical Methods", items: "Finite-element method (FEM), finite-difference time-domain (FDTD), method of moments (MoM), reduced order modeling/surrogate modeling, multiphysics modeling, optimization" },
     { category: "AI/ML Tools", items: "Tensorflow, Keras, PyTorch" },
     { category: "Software Tools", items: "Anaconda, Jupyter Notebook, PyCharm, VSCode, LaTeX, Git, high performance computing (HPC)" },
@@ -225,6 +225,6 @@ const portfolioData = {
   ],
   personal: [
     "Canadian citizen",
-    "Favorite drink: Iced coffee"
+    "Favourite drink: Iced coffee"
   ]
 };
