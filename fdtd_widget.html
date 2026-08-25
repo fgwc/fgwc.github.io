@@ -165,7 +165,7 @@
             justify-content: space-between;
             height: 100%;
             font-family: var(--font-mono);
-            font-size: 0.9rem;
+            font-size: 12.5px;
             color: var(--text-muted);
         }
 
@@ -183,7 +183,7 @@
 
         label {
             font-family: var(--font-mono);
-            font-size: 0.9rem;
+            font-size: 12.5px;
             color: var(--text-muted);
             text-transform: uppercase;
         }
@@ -195,7 +195,7 @@
             padding: 4px 8px;
             border-radius: 4px;
             font-family: var(--font-main);
-            font-size: 0.9rem;
+            font-size: 12.5px;
             cursor: pointer;
         }
 
@@ -212,7 +212,7 @@
         .val-display {
             color: var(--heading-color);
             font-weight: 500;
-            font-size: 0.95rem;
+            font-size: 12.5px;
             font-family: var(--font-mono);
             width: 45px;
             text-align: right;
@@ -225,7 +225,7 @@
     <div class="header">
         <div class="title-block">
             <h3>TMz Plane Wave</h3>
-            <div class="subtitle">FDTD Scattering off PEC (λ=12)</div>
+            <div class="subtitle">FDTD Scattering off PEC (λ=12 cells)</div>
         </div>
         <button id="playPauseBtn" class="primary-btn">Pause</button>
     </div>
@@ -306,27 +306,69 @@
 
     // Domain parameters
     const N = 200; // Grid spatial resolution $N \times N$
-    const sponge = 30; // Thickness of absorbing boundary layer in cells
-    const max_gamma = 0.15; // Peak conductivity of the absorbing layer
+    const sponge = 30; // Thickness of CPML absorbing boundary layer in cells
+    const sigma_max = 1.0; // Peak conductivity of the CPML layer
 
     // Wave properties
     const lambda = 12; // Wavelength in grid cells
-    const v = 0.5; // Phase velocity in cells per time step (Courant limit is $v \le 1/\sqrt{2} \approx 0.707$)
-    const omega = (2 * Math.PI * v) / lambda; // Angular frequency $\omega = k \cdot v$
+    const v = 0.5; // Phase velocity (Courant stable for 2D Yee grid: v <= 1/sqrt(2))
+    const omega = (2 * Math.PI * v) / lambda; // Angular frequency
 
-    // FDTD Arrays (Flattened 1D arrays representing 2D scalar fields)
-    // u1 models the Total Field (contains the scattering object).
-    let u1 = new Float32Array(N * N);
-    let u1_prev = new Float32Array(N * N);
-    let u1_next = new Float32Array(N * N);
+    // CPML Coefficients
+    // Implementing Convolutional Perfectly Matched Layers (CPML) for numerical stability and zero boundary reflections
+    const bx = new Float32Array(N), cx = new Float32Array(N);
+    const bxh = new Float32Array(N), cxh = new Float32Array(N);
+    const by = new Float32Array(N), cy = new Float32Array(N);
+    const byh = new Float32Array(N), cyh = new Float32Array(N);
 
-    // u2 models the Incident Field exclusively (vacuum space).
-    let u2 = new Float32Array(N * N);
-    let u2_prev = new Float32Array(N * N);
-    let u2_next = new Float32Array(N * N);
+    const m_pml = 3; // Polynomial grading order
+    for (let i = 0; i < N; i++) {
+        // E-node CPML formulation (aligned with integer grid points)
+        let dx = 0;
+        if (i < sponge) dx = sponge - i;
+        else if (i > N - 1 - sponge) dx = i - (N - 1 - sponge);
+        let sig = sigma_max * Math.pow(dx / sponge, m_pml);
+        bx[i] = Math.exp(-sig);
+        cx[i] = bx[i] - 1.0;
 
-    let mask = new Uint8Array(N * N); // Boolean mask defining the Perfect Electric Conductor (PEC) boundary
-    let gamma = new Float32Array(N * N); // Spatially dependent loss vector to absorb outgoing waves
+        by[i] = bx[i];
+        cy[i] = cx[i];
+
+        // H-node CPML formulation (aligned with half-integer grid points)
+        let hx = 0;
+        let i_half = i + 0.5;
+        if (i_half < sponge) hx = sponge - i_half;
+        else if (i_half > N - 1 - sponge) hx = i_half - (N - 1 - sponge);
+        let sigH = sigma_max * Math.pow(Math.max(0, hx) / sponge, m_pml);
+        bxh[i] = Math.exp(-sigH);
+        cxh[i] = bxh[i] - 1.0;
+
+        byh[i] = bxh[i];
+        cyh[i] = cxh[i];
+    }
+
+    // FDTD Arrays (Flattened 1D arrays representing 2D Yee grid TMz scalar fields)
+    const numCells = N * N;
+
+    // Grid 1: Total Field (contains the scattering object)
+    let Ez = new Float32Array(numCells);
+    let Hx = new Float32Array(numCells);
+    let Hy = new Float32Array(numCells);
+    let psi_Ez_x = new Float32Array(numCells);
+    let psi_Ez_y = new Float32Array(numCells);
+    let psi_Hx_y = new Float32Array(numCells);
+    let psi_Hy_x = new Float32Array(numCells);
+
+    // Grid 2: Incident Field (vacuum space used for real-time scattered field derivation)
+    let Ez2 = new Float32Array(numCells);
+    let Hx2 = new Float32Array(numCells);
+    let Hy2 = new Float32Array(numCells);
+    let psi_Ez2_x = new Float32Array(numCells);
+    let psi_Ez2_y = new Float32Array(numCells);
+    let psi_Hx2_y = new Float32Array(numCells);
+    let psi_Hy2_x = new Float32Array(numCells);
+
+    let mask = new Uint8Array(numCells); // Boolean mask defining the Perfect Electric Conductor (PEC) boundary
     let time = 0;
 
     // Display Parameters
@@ -343,32 +385,13 @@
     const cNeg = [142, 146, 150]; // Negative field peak
 
     /**
-     * Initializes the lossy sponge layer approximating a Perfectly Matched Layer (PML).
-     * Conductivity profile scales monotonically according to polynomial grading (power 3)
-     * to eliminate hard boundary impedance mismatches.
-     * Profile: $\sigma(x) = \sigma_{max} (\frac{x}{d})^3$
-     */
-    for (let i = 0; i < N; i++) {
-        for (let j = 0; j < N; j++) {
-            let dx = 0, dy = 0;
-            if (i < sponge) dx = (sponge - i) / sponge;
-            if (i > N - 1 - sponge) dx = (i - (N - 1 - sponge)) / sponge;
-            if (j < sponge) dy = (sponge - j) / sponge;
-            if (j > N - 1 - sponge) dy = (j - (N - 1 - sponge)) / sponge;
-            gamma[i + j * N] = max_gamma * Math.pow(Math.max(dx, dy), 3);
-        }
-    }
-
-    /**
      * Generates the Perfect Electric Conductor (PEC) boundary object inside the grid.
-     * Applies standard affine 2D rotation matrix:
-     * $x' = x \cos(\theta) - y \sin(\theta)$
-     * $y' = x \sin(\theta) + y \cos(\theta)$
+     * Applies standard affine 2D rotation matrix.
      */
     function updateObjectMask(rotationDeg) {
         mask.fill(0);
         const theta = rotationDeg * Math.PI / 180;
-        const cx = 100, cy = 100; // Center coordinate
+        const cx_coord = 100, cy_coord = 100; // Center coordinate
 
         // Base definition of the unrotated asymmetric payload shape
         const basePoly = [
@@ -381,12 +404,11 @@
 
         // Apply rotational mapping relative to origin
         currentPoly = basePoly.map(p => ({
-            x: cx + p.x * Math.cos(theta) - p.y * Math.sin(theta),
-            y: cy + p.x * Math.sin(theta) + p.y * Math.cos(theta)
+            x: cx_coord + p.x * Math.cos(theta) - p.y * Math.sin(theta),
+            y: cy_coord + p.x * Math.sin(theta) + p.y * Math.cos(theta)
         }));
 
-        // Point-in-polygon ray casting implementation (Jordan curve theorem).
-        // Rasterizes the abstract polygon definition onto the discrete spatial lattice.
+        // Point-in-polygon ray casting implementation
         for (let i = 0; i < N; i++) {
             for (let j = 0; j < N; j++) {
                 let inside = false;
@@ -429,47 +451,77 @@
 
     /**
      * Core time-marching algorithm based on the explicit Finite Difference Time Domain (FDTD) method.
-     * Solves the scalar wave equation with damping:
-     * $$ \frac{\partial^2 u}{\partial t^2} = v^2 \nabla^2 u - \gamma \frac{\partial u}{\partial t} $$
+     * Uses Yee-grid formulation with Convolutional Perfectly Matched Layers (CPML) for robust numerical stability.
      */
     function step() {
-        for (let i = 1; i < N - 1; i++) {
-            for (let j = 1; j < N - 1; j++) {
+        // Step 1: Magnetic Field (Hx, Hy) Updates
+        for (let j = 0; j < N - 1; j++) {
+            for (let i = 0; i < N - 1; i++) {
                 let idx = i + j * N;
-                let g = gamma[idx]; // Local damping constant
+                let idx_x = (i + 1) + j * N;
+                let idx_y = i + (j + 1) * N;
 
-                // 5-point discrete spatial Laplacian operator for 2D cartesian grid:
-                // $$ \nabla^2 u \approx \frac{u_{i-1, j} + u_{i+1, j} + u_{i, j-1} + u_{i, j+1} - 4u_{i, j}}{\Delta x^2} $$
-                let lap1 = u1[idx - 1] + u1[idx + 1] + u1[idx - N] + u1[idx + N] - 4 * u1[idx];
+                // Total Field H-updates
+                let dEz_y = Ez[idx_y] - Ez[idx];
+                psi_Hx_y[idx] = byh[j] * psi_Hx_y[idx] + cyh[j] * dEz_y;
+                Hx[idx] -= v * (dEz_y + psi_Hx_y[idx]);
 
-                // Total Field Time Integration step:
-                // Yielded by isolating $u(t+\Delta t)$ from discretized central finite difference approximations.
-                // The coefficient 0.25 derives from $(v \frac{\Delta t}{\Delta x})^2$, where $v = 0.5$.
-                u1_next[idx] = (2 * u1[idx] - (1 - g) * u1_prev[idx] + 0.25 * lap1) / (1 + g);
+                let dEz_x = Ez[idx_x] - Ez[idx];
+                psi_Hy_x[idx] = bxh[i] * psi_Hy_x[idx] + cxh[i] * dEz_x;
+                Hy[idx] += v * (dEz_x + psi_Hy_x[idx]);
 
-                // Incident Field Time Integration step (Simulated identically but unconditionally empty domain):
-                let lap2 = u2[idx - 1] + u2[idx + 1] + u2[idx - N] + u2[idx + N] - 4 * u2[idx];
-                u2_next[idx] = (2 * u2[idx] - (1 - g) * u2_prev[idx] + 0.25 * lap2) / (1 + g);
+                // Incident Field H-updates
+                let dEz2_y = Ez2[idx_y] - Ez2[idx];
+                psi_Hx2_y[idx] = byh[j] * psi_Hx2_y[idx] + cyh[j] * dEz2_y;
+                Hx2[idx] -= v * (dEz2_y + psi_Hx2_y[idx]);
+
+                let dEz2_x = Ez2[idx_x] - Ez2[idx];
+                psi_Hy2_x[idx] = bxh[i] * psi_Hy2_x[idx] + cxh[i] * dEz2_x;
+                Hy2[idx] += v * (dEz2_x + psi_Hy2_x[idx]);
             }
         }
 
-        // Incident soft-source plane wave injection.
-        // Superimposed onto the grid via soft boundary formulation ($u = u + E_{inc}$) to avoid non-physical scattering.
-        const src_val = 0.25 * Math.sin(omega * time);
-        for (let j = 0; j < N; j++) {
-            u1_next[32 + j * N] += src_val;
-            u2_next[32 + j * N] += src_val;
+        // Step 2: Electric Field (Ez) Updates
+        for (let j = 1; j < N; j++) {
+            for (let i = 1; i < N; i++) {
+                let idx = i + j * N;
+                let idx_x = (i - 1) + j * N;
+                let idx_y = i + (j - 1) * N;
+
+                // Total Field E-updates
+                let dHy_x = Hy[idx] - Hy[idx_x];
+                let dHx_y = Hx[idx] - Hx[idx_y];
+
+                psi_Ez_x[idx] = bx[i] * psi_Ez_x[idx] + cx[i] * dHy_x;
+                psi_Ez_y[idx] = by[j] * psi_Ez_y[idx] + cy[j] * dHx_y;
+
+                Ez[idx] += v * (dHy_x + psi_Ez_x[idx] - dHx_y - psi_Ez_y[idx]);
+
+                // Incident Field E-updates
+                let dHy2_x = Hy2[idx] - Hy2[idx_x];
+                let dHx2_y = Hx2[idx] - Hx2[idx_y];
+
+                psi_Ez2_x[idx] = bx[i] * psi_Ez2_x[idx] + cx[i] * dHy2_x;
+                psi_Ez2_y[idx] = by[j] * psi_Ez2_y[idx] + cy[j] * dHx2_y;
+
+                Ez2[idx] += v * (dHy2_x + psi_Ez2_x[idx] - dHx2_y - psi_Ez2_y[idx]);
+            }
         }
 
-        // Enforce Perfect Electric Conductor (PEC) hard boundary condition:
-        // Tangential electric field components vanish identically ($u = 0$).
-        for (let idx = 0; idx < N * N; idx++) {
-            if (mask[idx]) u1_next[idx] = 0;
+        // Step 3: Plane Wave Source Injection
+        // Propagating in the +x direction
+        const src_val = 1.0 * Math.sin(omega * time);
+        for (let j = 1; j < N - 1; j++) {
+            let idx = 32 + j * N;
+            Ez[idx] += src_val;
+            Ez2[idx] += src_val;
         }
 
-        // Rotate memory buffers for state advancement ($u_{t-1} \leftarrow u_{t}$, $u_t \leftarrow u_{t+1}$)
-        let t1 = u1_prev; u1_prev = u1; u1 = u1_next; u1_next = t1;
-        let t2 = u2_prev; u2_prev = u2; u2 = u2_next; u2_next = t2;
+        // Step 4: Enforce Hard PEC Boundary Conditions (Tangential E-field vanishes)
+        for (let idx = 0; idx < numCells; idx++) {
+            if (mask[idx]) Ez[idx] = 0;
+        }
+
         time++;
     }
 
@@ -485,8 +537,8 @@
                 let screen_y = N - 1 - j;
                 let px = (i + screen_y * N) * 4;
 
-                // Pure scattered field derived by linear superposition: $E_{scat} = E_{tot} - E_{inc}$
-                let val = renderMode === 'scattered' ? (u1[idx] - u2[idx]) : u1[idx];
+                // Pure scattered field derived by linear superposition: E_scat = E_tot - E_inc
+                let val = renderMode === 'scattered' ? (Ez[idx] - Ez2[idx]) : Ez[idx];
 
                 // Bipolar RGB channel linear interpolation
                 if (val > 0) {
