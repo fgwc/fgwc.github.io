@@ -69,7 +69,7 @@ const portfolioData = {
         <p>Developed, implemented, and tested methods for enhancing the prediction accuracy of surrogate thermal models for integrated circuit (IC) packages, using a physics-informed data sampling approach. Performed detailed study of effects with respect to dataset size, data quality, convergence, etc. Achieved 60-80% error reduction for tested IC packages compared to conventional surrogate modeling techniques.</p>
         <p>Developed general-purpose data sampling workflow for surrogate model training based on observed package sensor data, allowing accurate inference of underlying physics behavior. Achieved 60-80% error reduction for tested IC package.</p>
         <p>Developed Bayesian inference analysis pipeline to create robust, adaptive data sampling method capable of responding in real-time to live IC sensor data. Invention disclosure/patent in progress.</p>
-        <p>Leveraged PyCharm for code development to streamline collaboration, testing, and deployment.</p>
+        <p>Leveraged PyCharm for code development.</p>
       `
     },
     {
