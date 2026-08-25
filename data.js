@@ -2,7 +2,7 @@
 const portfolioData = {
   about: {
     name: "Fangwei Chang",
-    roleDescription: "PhD Candidate in Electrical and Computer Engineering at the University of Toronto. Experience in electromagnetics, FEM tools (COMSOL, HFSS), numeric simulation methods, and RF equipment/measurement.",
+    roleDescription: "Final year PhD Candidate in Electrical and Computer Engineering at the University of Toronto. Experience in electromagnetics, FEM tools (COMSOL, HFSS, etc), numeric simulation methods (FDTD, MoM, etc), and RF design/measurement.",
     emailText: "fangwei.chang@mail.utoronto.ca",
     emailLink: "fangwei.chang@mail.utoronto.ca",
     linkedinText: "linkedin.com/in/fangwei-c",
@@ -126,7 +126,7 @@ const portfolioData = {
       title: "An Aperiodic Sub-Wavelength Dipole Structure for Enhancing Near-Field Wireless Power Transfer",
       venue: "IEEE Antennas and Wireless Propagation Letters (AWPL), Vol. 23, No. 6, July 2024",
       links: [
-        { label: "link", url: "https://ieeexplore.ieee.org/document/10530379" }
+        { label: "link", url: "https://ieeexplore.ieee.org/document/10453659" }
       ]
     },
     {
@@ -140,40 +140,40 @@ const portfolioData = {
       title: "Shifted-Beam Array Coil for Highly Focal Transcranial Magnetic Stimulation",
       venue: "2021 IEEE International Symposium on Antennas and Propagation, Singapore",
       links: [
-        { label: "link", url: "https://ieeexplore.ieee.org/document/9703901" }
+        { label: "link", url: "https://ieeexplore.ieee.org/document/9703835" }
       ]
     }
   ],
   projects: [
     {
-      year: "Fall 2019[cite: 4]",
-      title: "Modelling of Hammer and Piano String Interaction[cite: 4]",
-      description: "Modelled the interaction between a piano hammer and string using forward Euler, backward Euler, and trapezoidal rule to solve the wave equation[cite: 4]. Compared the accuracy, stability, and CPU time of the numeric methods, and explored the effect of varying string and felt stiffness parameters on the produced note[cite: 4].",
-      link: "piano_wire_physics.pdf"
+      year: "2022",
+      title: "Design of Silicon Nitride Polarization Beam Splitter using a Directional Coupler",
+      description: "Demonstrated the design of a silicon nitride polarization beam splitter at 1520 nm using a directional coupler. Evaluated single mode operation for separating a TEM input into TE and TM mode outputs, and assessed intrinsic propagation, substrate leakage, and bend losses.",
+      link: "projects/SiNi_splitter.pdf"
     },
     {
-      year: "Winter 2022[cite: 5]",
-      title: "Design of Silicon Nitride Polarization Beam Splitter using a Directional Coupler[cite: 5]",
-      description: "Designed a silicon nitride polarization beam splitter for single-mode operation at 1520 nm using a directional coupler[cite: 5]. Evaluated intrinsic propagation loss, substrate leakage loss, and bend loss using 1D and 2D waveguide solvers, and outlined a proposed optical lithography fabrication procedure[cite: 5].",
-      link: "SiNi_splitter.pdf"
+      year: "2021",
+      title: "Optimisation Methods for Antenna Arrays for Wireless Power Transfer",
+      description: "Investigated wireless power transfer techniques using field synthesis and convex optimization via an array of inset-patch antennas at 5.8 GHz. Compared conjugate-phase focusing, sidelobe minimization, and S-matrix methods to maximize end-to-end power transfer efficiency and field focality.",
+      link: "projects/convex_optim_WPT.pdf"
     },
     {
-      year: "April 2019[cite: 6]",
-      title: "Application of WKB Method to Quantum Tunnelling[cite: 6]",
-      description: "Applied the WKB approximation method to study quantum tunnelling in one dimension[cite: 6]. Calculated reflection and transmission probabilities for a delta potential, a general potential with a single maximum, and a scattering case off the potential peak for a Gaussian potential[cite: 6].",
-      link: "WKB_method_report.pdf"
+      year: "2019",
+      title: "Modelling of Hammer and Piano String Interaction",
+      description: "Modeled the interaction between a piano hammer and string. Discretized the model in the time domain using forward Euler, backward Euler, and the trapezoidal rule to compare the accuracy, stability, and CPU time of the numeric methods.",
+      link: "projects/piano_wire_physics.pdf"
     },
     {
-      year: "Fall 2021[cite: 7]",
-      title: "Optimisation Methods for Antenna Arrays for Wireless Power Transfer[cite: 7]",
-      description: "Investigated wireless power transfer techniques using field synthesis and convex optimization with a 3x3 array of inset-patch antennas at 5.8 GHz[cite: 7]. Compared conjugate-phase focusing, sidelobe minimization, and S-matrix methods to maximize end-to-end power transfer efficiency and field focality[cite: 7].",
-      link: "convex_optim_WPT.pdf"
+      year: "2019",
+      title: "Application of WKB Method to Quantum Tunnelling",
+      description: "Applied the WKB approximation method to study quantum tunnelling in one dimension. Calculated reflection and transmission probabilities for a delta potential, a general potential with a single maximum, and scattering off a potential peak.",
+      link: "projects/WKB_method_report.pdf"
     },
     {
-      year: "Fall 2019[cite: 8]",
-      title: "Near Field Electromagnetic Focusing using Dipoles[cite: 8]",
-      description: "Demonstrated near-field focusing of electric and magnetic fields using a linear array of dipoles[cite: 8]. Implemented the system via a 2D finite-difference time-domain (FDTD) scheme to reproduce Gaussian target functions and investigated focusing properties in dielectric materials[cite: 8].",
-      link: "FDTD_magnetic_beamforming.pdf"
+      year: "2019",
+      title: "Near Field Electromagnetic Focusing using Dipoles",
+      description: "Demonstrated near-field focusing of electric and magnetic fields using a linear array of dipoles. Implemented the system via a 2D finite-difference time-domain (FDTD) scheme to reproduce Gaussian target functions and investigated focusing properties in dielectric materials.",
+      link: "projects/FDTD_magnetic_beamforming.pdf"
     }
   ],
   volunteering: [
