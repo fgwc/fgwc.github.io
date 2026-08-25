@@ -3,15 +3,14 @@ const portfolioData = {
   about: {
     name: "Fangwei Chang",
     roleDescription: "Final year PhD Candidate in Electrical and Computer Engineering at the University of Toronto. Experience in electromagnetics, FEM tools (COMSOL, HFSS, etc), numeric simulation methods (FDTD, MoM, etc), and RF design/measurement.",
-    emailText: "fangwei.chang@mail.utoronto.ca",
-    emailLink: "fangwei.chang@mail.utoronto.ca",
+    emailBase64: "ZmFuZ3dlaS5jaGFuZ0BtYWlsLnV0b3JvbnRvLmNh",
     linkedinText: "linkedin.com/in/fangwei-c",
     linkedinLink: "linkedin.com/in/fangwei-c",
     githubText: "github.com/fgwc",
     githubLink: "github.com/fgwc",
     scholarText: "Google Scholar Profile",
     scholarLink: "https://scholar.google.com/citations?user=8wtEQYgAAAAJ",
-    resumePdf: "CV_fangwei_chang.pdf"
+    resumePdfBase64: "Q1ZfZmFuZ3dlaV9jaGFuZy5wZGY=" // Base64 for "CV_fangwei_chang.pdf"
   },
   education: [
     {
@@ -149,31 +148,31 @@ const portfolioData = {
       year: "2022",
       title: "Design of Silicon Nitride Polarization Beam Splitter using a Directional Coupler",
       description: "Demonstrated the design of a silicon nitride polarization beam splitter at 1520 nm using a directional coupler. Evaluated single mode operation for separating a TEM input into TE and TM mode outputs, and assessed intrinsic propagation, substrate leakage, and bend losses.",
-      link: "projects/SiNi_splitter.pdf"
+      linkBase64: "cHJvamVjdHMvU2lOaV9zcGxpdHRlci5wZGY=" // Base64 for "projects/SiNi_splitter.pdf"
     },
     {
       year: "2021",
       title: "Optimisation Methods for Antenna Arrays for Wireless Power Transfer",
       description: "Investigated wireless power transfer techniques using field synthesis and convex optimization via an array of inset-patch antennas at 5.8 GHz. Compared conjugate-phase focusing, sidelobe minimization, and S-matrix methods to maximize end-to-end power transfer efficiency and field focality.",
-      link: "projects/convex_optim_WPT.pdf"
+      linkBase64: "cHJvamVjdHMvY29udmV4X29wdGltX1dQVC5wZGY=" // Base64 for "projects/convex_optim_WPT.pdf"
     },
     {
       year: "2019",
       title: "Modelling of Hammer and Piano String Interaction",
       description: "Modeled the interaction between a piano hammer and string. Discretized the model in the time domain using forward Euler, backward Euler, and the trapezoidal rule to compare the accuracy, stability, and CPU time of the numeric methods.",
-      link: "projects/piano_wire_physics.pdf"
+      linkBase64: "cHJvamVjdHMvcGlhbm9fd2lyZV9waHlzaWNzLnBkZg==" // Base64 for "projects/piano_wire_physics.pdf"
     },
     {
       year: "2019",
       title: "Application of WKB Method to Quantum Tunnelling",
       description: "Applied the WKB approximation method to study quantum tunnelling in one dimension. Calculated reflection and transmission probabilities for a delta potential, a general potential with a single maximum, and scattering off a potential peak.",
-      link: "projects/WKB_method_report.pdf"
+      linkBase64: "cHJvamVjdHMvV0tCX21ldGhvZF9yZXBvcnQucGRm" // Base64 for "projects/WKB_method_report.pdf"
     },
     {
       year: "2019",
       title: "Near Field Electromagnetic Focusing using Dipoles",
       description: "Demonstrated near-field focusing of electric and magnetic fields using a linear array of dipoles. Implemented the system via a 2D finite-difference time-domain (FDTD) scheme to reproduce Gaussian target functions and investigated focusing properties in dielectric materials.",
-      link: "projects/FDTD_magnetic_beamforming.pdf"
+      linkBase64: "cHJvamVjdHMvRkRURF9tYWduZXRpY19iZWFtZm9ybWluZy5wZGY=" // Base64 for "projects/FDTD_magnetic_beamforming.pdf"
     }
   ],
   volunteering: [
