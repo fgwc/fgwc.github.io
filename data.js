@@ -2,7 +2,7 @@
 const portfolioData = {
   about: {
     name: "Fangwei Chang",
-    roleDescription: "Final year PhD Candidate in Electrical and Computer Engineering at the University of Toronto. Experience in electromagnetics, FEM tools (COMSOL, HFSS, etc), numeric simulation methods (FDTD, MoM, etc), and RF design/measurement.",
+    roleDescription: "Final year PhD Candidate in Electrical and Computer Engineering at the University of Toronto. Background in physics and math. Experience in electromagnetics, FEM tools (COMSOL, HFSS, etc), numeric simulation methods (FDTD, MoM, etc), and RF design/measurement.<br><br>Actively looking for full-time opportunities!",
     emailBase64: "ZmFuZ3dlaS5jaGFuZ0BtYWlsLnV0b3JvbnRvLmNh",
     linkedinText: "linkedin.com/in/fangwei-c",
     linkedinLink: "linkedin.com/in/fangwei-c",
