@@ -2,7 +2,7 @@
 const portfolioData = {
   about: {
     name: "Fangwei Chang",
-    roleDescription: "Final year PhD Candidate in Electrical and Computer Engineering at the University of Toronto. Background in physics and math. Experience in electromagnetics, FEM tools (COMSOL, HFSS, etc), numeric simulation methods (FDTD, MoM, etc), and RF design/measurement.<br><br>Actively looking for full-time opportunities!",
+    roleDescription: "Final year PhD Candidate in Electrical and Computer Engineering at the University of Toronto. Experience in electromagnetics, FEM tools (COMSOL, HFSS, etc), numeric simulation methods (FDTD, MoM, etc), and RF design/measurement.<br><br>Actively looking for full-time opportunities!",
     emailBase64: "ZmFuZ3dlaS5jaGFuZ0BtYWlsLnV0b3JvbnRvLmNh",
     linkedinText: "linkedin.com/in/fangwei-c",
     linkedinLink: "linkedin.com/in/fangwei-c",
@@ -10,7 +10,7 @@ const portfolioData = {
     githubLink: "github.com/fgwc",
     scholarText: "Google Scholar Profile",
     scholarLink: "https://scholar.google.com/citations?user=8wtEQYgAAAAJ",
-    resumePdfBase64: "Q1ZfZmFuZ3dlaV9jaGFuZy5wZGY=" // Base64 for "CV_fangwei_chang.pdf"
+    resumePdfBase64: "Q1ZfZmFuZ3dlaV9jaGFuZy5wZGY="
   },
   education: [
     {
@@ -119,28 +119,32 @@ const portfolioData = {
     {
       title: "Wireless Power Transfer Using a Cavity-Enclosed Impedance Metawire Structure",
       venue: "2026 IEEE International Symposium on Antennas and Propagation, Detroit, United States",
-      links: []
+      links: [],
+      pdfBase64: "cHVibGljYXRpb25zL1dQVF9DYXZpdHktRW5jbG9zZWQucGRm"
     },
     {
       title: "An Aperiodic Sub-Wavelength Dipole Structure for Enhancing Near-Field Wireless Power Transfer",
       venue: "IEEE Antennas and Wireless Propagation Letters (AWPL), Vol. 23, No. 6, July 2024",
       links: [
         { label: "link", url: "https://ieeexplore.ieee.org/document/10453659" }
-      ]
+      ],
+      pdfBase64: "cHVibGljYXRpb25zL0FwZXJpb2RpY19TdWJ3YXZlbGVuZ3RoX0RpcG9sZV9TdHJ1Y3R1cmUucGRm"
     },
     {
       title: "A Shifted-Beam Method for Near-Field Wireless Power Transfer using Parasitic Arrays",
       venue: "2023 IEEE International Symposium on Antennas and Propagation, Portland, United States",
       links: [
         { label: "link", url: "https://ieeexplore.ieee.org/document/10238231" }
-      ]
+      ],
+      pdfBase64: "cHVibGljYXRpb25zL1NoaWZ0ZWQtQmVhbV9NZXRob2QucGRm"
     },
     {
       title: "Shifted-Beam Array Coil for Highly Focal Transcranial Magnetic Stimulation",
       venue: "2021 IEEE International Symposium on Antennas and Propagation, Singapore",
       links: [
         { label: "link", url: "https://ieeexplore.ieee.org/document/9703835" }
-      ]
+      ],
+      pdfBase64: "cHVibGljYXRpb25zL1NoaWZ0ZWQtQmVhbV9BcnJheV9Db2lsLnBkZg=="
     }
   ],
   projects: [
@@ -148,31 +152,31 @@ const portfolioData = {
       year: "2022",
       title: "Design of Silicon Nitride Polarization Beam Splitter using a Directional Coupler",
       description: "Demonstrated the design of a silicon nitride polarization beam splitter at 1520 nm using a directional coupler. Evaluated single mode operation for separating a TEM input into TE and TM mode outputs, and assessed intrinsic propagation, substrate leakage, and bend losses.",
-      linkBase64: "cHJvamVjdHMvU2lOaV9zcGxpdHRlci5wZGY=" // Base64 for "projects/SiNi_splitter.pdf"
+      linkBase64: "cHJvamVjdHMvU2lOaV9zcGxpdHRlci5wZGY="
     },
     {
       year: "2021",
       title: "Optimisation Methods for Antenna Arrays for Wireless Power Transfer",
       description: "Investigated wireless power transfer techniques using field synthesis and convex optimization via an array of inset-patch antennas at 5.8 GHz. Compared conjugate-phase focusing, sidelobe minimization, and S-matrix methods to maximize end-to-end power transfer efficiency and field focality.",
-      linkBase64: "cHJvamVjdHMvY29udmV4X29wdGltX1dQVC5wZGY=" // Base64 for "projects/convex_optim_WPT.pdf"
+      linkBase64: "cHJvamVjdHMvY29udmV4X29wdGltX1dQVC5wZGY="
     },
     {
       year: "2019",
       title: "Modelling of Hammer and Piano String Interaction",
       description: "Modeled the interaction between a piano hammer and string. Discretized the model in the time domain using forward Euler, backward Euler, and the trapezoidal rule to compare the accuracy, stability, and CPU time of the numeric methods.",
-      linkBase64: "cHJvamVjdHMvcGlhbm9fd2lyZV9waHlzaWNzLnBkZg==" // Base64 for "projects/piano_wire_physics.pdf"
+      linkBase64: "cHJvamVjdHMvcGlhbm9fd2lyZV9waHlzaWNzLnBkZg=="
     },
     {
       year: "2019",
       title: "Application of WKB Method to Quantum Tunnelling",
       description: "Applied the WKB approximation method to study quantum tunnelling in one dimension. Calculated reflection and transmission probabilities for a delta potential, a general potential with a single maximum, and scattering off a potential peak.",
-      linkBase64: "cHJvamVjdHMvV0tCX21ldGhvZF9yZXBvcnQucGRm" // Base64 for "projects/WKB_method_report.pdf"
+      linkBase64: "cHJvamVjdHMvV0tCX21ldGhvZF9yZXBvcnQucGRm"
     },
     {
       year: "2019",
       title: "Near Field Electromagnetic Focusing using Dipoles",
       description: "Demonstrated near-field focusing of electric and magnetic fields using a linear array of dipoles. Implemented the system via a 2D finite-difference time-domain (FDTD) scheme to reproduce Gaussian target functions and investigated focusing properties in dielectric materials.",
-      linkBase64: "cHJvamVjdHMvRkRURF9tYWduZXRpY19iZWFtZm9ybWluZy5wZGY=" // Base64 for "projects/FDTD_magnetic_beamforming.pdf"
+      linkBase64: "cHJvamVjdHMvRkRURF9tYWduZXRpY19iZWFtZm9ybWluZy5wZGY="
     }
   ],
   volunteering: [

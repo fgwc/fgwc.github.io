@@ -236,7 +236,7 @@
   .card:hover { border-color: var(--text-muted); }
   .card .year { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent); margin-bottom: 0.35rem; }
   .card h3 { font-size: 1.05rem; font-weight: 500; margin-bottom: 0.5rem; color: var(--heading-color); }
-  .card p { color: var(--text); font-size: 0.9rem; margin-bottom: 1rem; flex-grow: 1; display: block; list-style-type: none; margin-left: 0; }
+  .card p { color: var(--text); font-size: 0.9rem; margin-bottom: 1rem; flex-grow: 1; display: block; list-style-type: margin-left: 0; }
   .card .links { font-family: var(--font-mono); font-size: 0.85rem; }
 
   /* Personal Block Aesthetic List */
@@ -252,7 +252,7 @@
     html { scroll-behavior: auto; }
   }
 </style>
-<script src="data.js?v=6"></script>
+<script src="data.js?v=8"></script>
 </head>
 <body>
 
@@ -445,15 +445,24 @@
 
     document.getElementById('volunteering-container').innerHTML = buildTimelineHTML(d.volunteering, 2020);
 
-    const pubHTML = d.publications.map(item => `
-      <div class="publication">
-        <h3>${item.title}</h3>
-        <div>
-          <span class="venue">${item.venue}</span>
-          ${item.links.length > 0 ? `<span class="links">${item.links.map(link => `<a href="${link.url}" target="_blank">[${link.label}]</a>`).join(' ')}</span>` : ''}
+    const pubHTML = d.publications.map(item => {
+      let linksHTML = '';
+      if (item.links && item.links.length > 0) {
+        linksHTML += item.links.map(link => `<a href="${link.url}" target="_blank">[${link.label}]</a>`).join(' ');
+      }
+      if (item.pdfBase64) {
+        linksHTML += ` <a class="secure-pdf" data-pdf="${item.pdfBase64}" style="cursor: pointer;" title="View PDF">[PDF]</a>`;
+      }
+      return `
+        <div class="publication">
+          <h3>${item.title}</h3>
+          <div>
+            <span class="venue">${item.venue}</span>
+            ${linksHTML ? `<span class="links">${linksHTML.trim()}</span>` : ''}
+          </div>
         </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
     document.getElementById('publications-container').innerHTML = pubHTML;
 
     const projHTML = d.projects.map(item => `
