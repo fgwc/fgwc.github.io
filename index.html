@@ -134,8 +134,8 @@
     display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;
     margin-bottom: 1.5rem; font-family: var(--font-mono); font-size: 0.85rem;
   }
-  .contact-inline a { display: inline-flex; align-items: center; color: var(--accent); }
-  .contact-inline a:hover { color: var(--heading-color); text-decoration: underline; }
+  .contact-inline a, .secure-link { display: inline-flex; align-items: center; color: var(--accent); cursor: pointer; transition: color 0.15s ease; }
+  .contact-inline a:hover, .secure-link:hover { color: var(--heading-color); text-decoration: underline; }
   .contact-sep { color: var(--text-muted); user-select: none; }
   .about-content { font-size: 1.08rem; line-height: 1.6; max-width: 75ch; color: var(--text); }
 
@@ -180,12 +180,11 @@
 
   /* Expandable sections */
   .hidden-item { display: none !important; }
-  .timeline-item.hidden-item.revealed { display: block !important; }
-  .card.hidden-item.revealed { display: flex !important; }
+  .timeline-item.revealed { display: block !important; }
+  .card.revealed { display: flex !important; }
 
   .timeline-controls {
-    position: relative;
-    margin-top: -0.25rem;
+    margin-top: 1.25rem;
   }
   .expand-btn {
     font-family: var(--font-main);
@@ -251,7 +250,7 @@
     html { scroll-behavior: auto; }
   }
 </style>
-<script src="data.js?v=10"></script>
+<script src="data.js?v=12"></script>
 </head>
 <body>
 
@@ -289,6 +288,7 @@
   <div class="wrap fade-up">
     <h2>Professional Experience</h2>
     <div class="timeline" id="experience-container"></div>
+    <div class="timeline-controls" id="exp-controls" style="display: none;"></div>
   </div>
 </section>
 
@@ -310,6 +310,7 @@
   <div class="wrap fade-up">
     <h2>Projects</h2>
     <div class="grid" id="projects-container"></div>
+    <div class="timeline-controls" id="proj-controls" style="display: none;"></div>
   </div>
 </section>
 
@@ -317,6 +318,7 @@
   <div class="wrap fade-up">
     <h2>Organizations and Volunteering</h2>
     <div class="timeline" id="volunteering-container"></div>
+    <div class="timeline-controls" id="vol-controls" style="display: none;"></div>
   </div>
 </section>
 
@@ -345,18 +347,24 @@
 
     document.getElementById('nav-name').textContent = d.about.name;
 
+    let obfuscatedEmailDisplay = "";
+    if (d.about.emailBase64) {
+       const decodedEmail = atob(d.about.emailBase64);
+       obfuscatedEmailDisplay = decodedEmail.replace('@', ' [at] ');
+    }
+
     document.getElementById('about-container').innerHTML = `
       <div class="about-grid">
         <div class="about-text-col">
           <h1>${d.about.name}</h1>
           <div class="contact-inline">
-            <a class="secure-email" style="cursor: pointer;" data-clicks="0" title="Reveal Email">[Reveal Email]</a>
+            <a class="secure-email" data-email="${d.about.emailBase64}" title="Send Email">${obfuscatedEmailDisplay}</a>
             <span class="contact-sep">|</span>
-            <a href="https://${d.about.linkedinLink}">${d.about.linkedinText}</a>
+            <a class="secure-link" data-href="${d.about.linkedinLinkBase64}">${d.about.linkedinText}</a>
             <span class="contact-sep">|</span>
-            <a href="https://${d.about.githubLink}">${d.about.githubText}</a>
+            <a class="secure-link" data-href="${d.about.githubLinkBase64}">${d.about.githubText}</a>
             <span class="contact-sep">|</span>
-            <a href="${d.about.scholarLink}" target="_blank">${d.about.scholarText}</a>
+            <a class="secure-link" data-href="${d.about.scholarLinkBase64}">${d.about.scholarText}</a>
             <span class="contact-sep">|</span>
             <a class="secure-pdf" data-pdf="${d.about.resumePdfBase64}" style="cursor: pointer;" title="View PDF Resume">[PDF Resume]</a>
           </div>
@@ -394,7 +402,7 @@
     }).join('');
     document.getElementById('skills-container').innerHTML = skillsHTML;
 
-    function buildTimelineHTML(items, thresholdYear) {
+    function buildTimelineHTML(items, thresholdYear, containerId, controlsId) {
       let html = '';
       let hasHidden = false;
       items.forEach(item => {
@@ -418,10 +426,13 @@
           </div>
         `;
       });
+      document.getElementById(containerId).innerHTML = html;
+
       if (hasHidden) {
-        html += `<div class="timeline-controls"><button class="btn-toggle expand-btn" onclick="toggleHidden(this)">Show More</button></div>`;
+        const controls = document.getElementById(controlsId);
+        controls.innerHTML = `<button class="btn-toggle expand-btn" onclick="toggleHidden(this)">Show More</button>`;
+        controls.style.display = 'block';
       }
-      return html;
     }
 
     window.toggleHidden = function(btn) {
@@ -440,22 +451,21 @@
       btn.textContent = isExpanding ? 'Show Less' : 'Show More';
     };
 
-    document.getElementById('experience-container').innerHTML = buildTimelineHTML(d.experience, 2017);
-
-    document.getElementById('volunteering-container').innerHTML = buildTimelineHTML(d.volunteering, 2020);
+    buildTimelineHTML(d.experience, 2017, 'experience-container', 'exp-controls');
+    buildTimelineHTML(d.volunteering, 2020, 'volunteering-container', 'vol-controls');
 
     const pubHTML = d.publications.map(item => {
       let linksHTML = '';
       if (item.links && item.links.length > 0) {
-        linksHTML += item.links.map(link => `<a href="${link.url}" target="_blank">[${link.label}]</a>`).join(' ');
+        linksHTML += item.links.map(link => `<a class="secure-link" data-href="${link.urlBase64}">[${link.label}]</a>`).join(' ');
       }
       if (item.pdfBase64) {
-        linksHTML += ` <a class="secure-pdf" data-pdf="${item.pdfBase64}" style="cursor: pointer;" title="View PDF">[PDF]</a>`;
+        linksHTML += ` <a class="secure-pdf" data-pdf="${item.pdfBase64}" title="View PDF">[PDF]</a>`;
       }
       return `
         <div class="timeline-item">
           <div class="meta" style="margin-bottom: 0.15rem;">
-            <span class="org">${item.title}</span>
+            <span class="org" style="font-weight: 400;">${item.title}</span>
           </div>
           <h3 style="margin-bottom: 0.2rem; font-size: 0.95rem;">${item.authors}</h3>
           <div>
@@ -477,18 +487,16 @@
           <div class="year">${item.year}</div>
           <h3>${item.title}</h3>
           <p style="display: block; list-style-type: none; margin-left: 0;">${item.description}</p>
-          <div class="links"><a class="secure-pdf" data-pdf="${item.linkBase64}" style="cursor: pointer;" title="View PDF">[View PDF]</a></div>
+          <div class="links"><a class="secure-pdf" data-pdf="${item.linkBase64}" title="View PDF">[View PDF]</a></div>
         </div>
       `;
     });
     document.getElementById('projects-container').innerHTML = projHTML;
 
     if (hasHiddenProj) {
-      const btnContainer = document.createElement('div');
-      btnContainer.className = 'timeline-controls';
-      btnContainer.style.marginTop = '1rem';
-      btnContainer.innerHTML = `<button class="btn-toggle expand-btn" onclick="toggleHidden(this)">Show More</button>`;
-      document.getElementById('projects-container').insertAdjacentElement('afterend', btnContainer);
+      const controls = document.getElementById('proj-controls');
+      controls.innerHTML = `<button class="btn-toggle expand-btn" onclick="toggleHidden(this)">Show More</button>`;
+      controls.style.display = 'block';
     }
 
     const personalHTML = d.personal.map(p => `<li>${p}</li>`).join('');
@@ -499,38 +507,30 @@
     `;
 
     document.getElementById('contact-container').innerHTML = `
-      <div><span class="k">Email:</span> <a class="secure-email" style="cursor: pointer;" data-clicks="0" title="Reveal Email">[Reveal Email]</a></div>
-      <div><span class="k">GitHub:</span> <a href="https://${d.about.githubLink}">${d.about.githubText}</a></div>
-      <div><span class="k">LinkedIn:</span> <a href="https://${d.about.linkedinLink}">${d.about.linkedinText}</a></div>
-      <div><span class="k">Scholar:</span> <a href="${d.about.scholarLink}">${d.about.scholarText}</a></div>
+      <div><span class="k">Email:</span> <a class="secure-email" data-email="${d.about.emailBase64}" title="Send Email">${obfuscatedEmailDisplay}</a></div>
+      <div><span class="k">GitHub:</span> <a class="secure-link" data-href="${d.about.githubLinkBase64}">${d.about.githubText}</a></div>
+      <div><span class="k">LinkedIn:</span> <a class="secure-link" data-href="${d.about.linkedinLinkBase64}">${d.about.linkedinText}</a></div>
+      <div><span class="k">Scholar:</span> <a class="secure-link" data-href="${d.about.scholarLinkBase64}">${d.about.scholarText}</a></div>
     `;
 
     document.getElementById('footer-fine').textContent = `© ${new Date().getFullYear()} ${d.about.name}. Structured in HTML/CSS/JS.`;
 
-    // Dynamic Email Revelation Logic
-    if(d.about.emailBase64) {
-      const decodedEmail = atob(d.about.emailBase64);
-      const obfuscatedEmail = decodedEmail.replace('@', ' [at] ');
-      document.querySelectorAll('.secure-email').forEach(el => {
-        el.addEventListener('click', function(e) {
-          if (!this.getAttribute('href')) {
-            e.preventDefault();
-            let clicks = parseInt(this.getAttribute('data-clicks'));
-            if (clicks === 0) {
-              this.textContent = obfuscatedEmail;
-              this.setAttribute('data-clicks', '1');
-            } else if (clicks === 1) {
-              this.textContent = decodedEmail;
-              this.setAttribute('href', 'mailto:' + decodedEmail);
-              window.location.href = 'mailto:' + decodedEmail;
-              this.setAttribute('data-clicks', '2');
-            }
-          }
-        });
+    document.querySelectorAll('.secure-email').forEach(el => {
+      el.addEventListener('click', function(e) {
+        e.preventDefault();
+        const email = atob(this.getAttribute('data-email'));
+        window.location.href = 'mailto:' + email;
       });
-    }
+    });
 
-    // Dynamic PDF Link Decoding Logic
+    document.querySelectorAll('.secure-link').forEach(el => {
+      el.addEventListener('click', function(e) {
+        e.preventDefault();
+        const url = atob(this.getAttribute('data-href'));
+        window.open(url, '_blank');
+      });
+    });
+
     document.querySelectorAll('.secure-pdf').forEach(el => {
       el.addEventListener('click', function(e) {
         e.preventDefault();

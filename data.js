@@ -5,11 +5,11 @@ const portfolioData = {
     roleDescription: "Final year PhD Candidate in Electrical and Computer Engineering at the University of Toronto. Experience in electromagnetics, FEM tools (COMSOL, HFSS, etc), numeric simulation methods (FDTD, MoM, etc), and RF design/measurement.<br><br>Actively looking for full-time opportunities!",
     emailBase64: "ZmFuZ3dlaS5jaGFuZ0BtYWlsLnV0b3JvbnRvLmNh",
     linkedinText: "linkedin.com/in/fangwei-c",
-    linkedinLink: "linkedin.com/in/fangwei-c",
+    linkedinLinkBase64: "aHR0cHM6Ly9saW5rZWRpbi5jb20vaW4vZmFuZ3dlaS1j",
     githubText: "github.com/fgwc",
-    githubLink: "github.com/fgwc",
+    githubLinkBase64: "aHR0cHM6Ly9naXRodWIuY29tL2Znd2M=",
     scholarText: "Google Scholar Profile",
-    scholarLink: "https://scholar.google.com/citations?user=8wtEQYgAAAAJ",
+    scholarLinkBase64: "aHR0cHM6Ly9zY2hvbGFyLmdvb2dsZS5jb20vY2l0YXRpb25zP3VzZXI9OHd0RVFZZ0FBQUFK",
     resumePdfBase64: "Q1ZfZmFuZ3dlaV9jaGFuZy5wZGY="
   },
   education: [
@@ -128,7 +128,7 @@ const portfolioData = {
       authors: "<b>F. Chang</b> and G. V. Eleftheriades",
       venue: "IEEE Antennas and Wireless Propagation Letters (AWPL), Vol. 23, No. 6, July 2024",
       links: [
-        { label: "link", url: "https://ieeexplore.ieee.org/document/10453659" }
+        { label: "link", urlBase64: "aHR0cHM6Ly9pZWVleHBsb3JlLmllZWUub3JnL2RvY3VtZW50LzEwNDUzNjU5" }
       ],
       pdfBase64: "cHVibGljYXRpb25zL0FwZXJpb2RpY19TdWJ3YXZlbGVuZ3RoX0RpcG9sZV9TdHJ1Y3R1cmUucGRm"
     },
@@ -137,7 +137,7 @@ const portfolioData = {
       authors: "<b>F. Chang</b> and G. V. Eleftheriades",
       venue: "2023 IEEE International Symposium on Antennas and Propagation, Portland, United States",
       links: [
-        { label: "link", url: "https://ieeexplore.ieee.org/document/10238231" }
+        { label: "link", urlBase64: "aHR0cHM6Ly9pZWVleHBsb3JlLmllZWUub3JnL2RvY3VtZW50LzEwMjM4MjMx" }
       ],
       pdfBase64: "cHVibGljYXRpb25zL1NoaWZ0ZWQtQmVhbV9NZXRob2QucGRm"
     },
@@ -146,7 +146,7 @@ const portfolioData = {
       authors: "<b>F. Chang</b> and G. V. Eleftheriades",
       venue: "2021 IEEE International Symposium on Antennas and Propagation, Singapore",
       links: [
-        { label: "link", url: "https://ieeexplore.ieee.org/document/9703835" }
+        { label: "link", urlBase64: "aHR0cHM6Ly9pZWVleHBsb3JlLmllZWUub3JnL2RvY3VtZW50Lzk3MDM4MzU=" }
       ],
       pdfBase64: "cHVibGljYXRpb25zL1NoaWZ0ZWQtQmVhbV9BcnJheV9Db2lsLnBkZg=="
     }
