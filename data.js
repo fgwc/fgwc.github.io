@@ -118,12 +118,14 @@ const portfolioData = {
   publications: [
     {
       title: "Wireless Power Transfer Using a Cavity-Enclosed Impedance Metawire Structure",
+      authors: "<b>F. Chang</b> and G. V. Eleftheriades",
       venue: "2026 IEEE International Symposium on Antennas and Propagation, Detroit, United States",
       links: [],
       pdfBase64: "cHVibGljYXRpb25zL1dQVF9DYXZpdHktRW5jbG9zZWQucGRm"
     },
     {
       title: "An Aperiodic Sub-Wavelength Dipole Structure for Enhancing Near-Field Wireless Power Transfer",
+      authors: "<b>F. Chang</b> and G. V. Eleftheriades",
       venue: "IEEE Antennas and Wireless Propagation Letters (AWPL), Vol. 23, No. 6, July 2024",
       links: [
         { label: "link", url: "https://ieeexplore.ieee.org/document/10453659" }
@@ -132,6 +134,7 @@ const portfolioData = {
     },
     {
       title: "A Shifted-Beam Method for Near-Field Wireless Power Transfer using Parasitic Arrays",
+      authors: "<b>F. Chang</b> and G. V. Eleftheriades",
       venue: "2023 IEEE International Symposium on Antennas and Propagation, Portland, United States",
       links: [
         { label: "link", url: "https://ieeexplore.ieee.org/document/10238231" }
@@ -140,6 +143,7 @@ const portfolioData = {
     },
     {
       title: "Shifted-Beam Array Coil for Highly Focal Transcranial Magnetic Stimulation",
+      authors: "<b>F. Chang</b> and G. V. Eleftheriades",
       venue: "2021 IEEE International Symposium on Antennas and Propagation, Singapore",
       links: [
         { label: "link", url: "https://ieeexplore.ieee.org/document/9703835" }
@@ -162,6 +166,12 @@ const portfolioData = {
     },
     {
       year: "2019",
+      title: "Near Field Electromagnetic Focusing using Dipoles",
+      description: "Demonstrated near-field focusing of electric and magnetic fields using a linear array of dipoles. Implemented the system via a 2D finite-difference time-domain (FDTD) scheme to reproduce Gaussian target functions and investigated focusing properties in dielectric materials.",
+      linkBase64: "cHJvamVjdHMvRkRURF9tYWduZXRpY19iZWFtZm9ybWluZy5wZGY="
+    },
+    {
+      year: "2019",
       title: "Modelling of Hammer and Piano String Interaction",
       description: "Modeled the interaction between a piano hammer and string. Discretized the model in the time domain using forward Euler, backward Euler, and the trapezoidal rule to compare the accuracy, stability, and CPU time of the numeric methods.",
       linkBase64: "cHJvamVjdHMvcGlhbm9fd2lyZV9waHlzaWNzLnBkZg=="
@@ -171,12 +181,6 @@ const portfolioData = {
       title: "Application of WKB Method to Quantum Tunnelling",
       description: "Applied the WKB approximation method to study quantum tunnelling in one dimension. Calculated reflection and transmission probabilities for a delta potential, a general potential with a single maximum, and scattering off a potential peak.",
       linkBase64: "cHJvamVjdHMvV0tCX21ldGhvZF9yZXBvcnQucGRm"
-    },
-    {
-      year: "2019",
-      title: "Near Field Electromagnetic Focusing using Dipoles",
-      description: "Demonstrated near-field focusing of electric and magnetic fields using a linear array of dipoles. Implemented the system via a 2D finite-difference time-domain (FDTD) scheme to reproduce Gaussian target functions and investigated focusing properties in dielectric materials.",
-      linkBase64: "cHJvamVjdHMvRkRURF9tYWduZXRpY19iZWFtZm9ybWluZy5wZGY="
     }
   ],
   volunteering: [

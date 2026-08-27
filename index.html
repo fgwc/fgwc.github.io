@@ -179,8 +179,9 @@
   .cv-bullets { margin: 0; padding: 0; }
 
   /* Expandable sections */
-  .hidden-item { display: none; }
-  .hidden-item.revealed { display: block; }
+  .hidden-item { display: none !important; }
+  .timeline-item.hidden-item.revealed { display: block !important; }
+  .card.hidden-item.revealed { display: flex !important; }
 
   .timeline-controls {
     position: relative;
@@ -212,19 +213,17 @@
     background: var(--bg-panel); border: 1px solid var(--border);
     padding: 0.15rem 0.4rem; border-radius: 3px; color: var(--text);
     font-family: var(--font-mono); font-size: 0.82rem; display: inline-block;
+    transition: border-color 0.15s ease;
+    cursor: default;
+  }
+  .tech-tag:hover {
+    border-color: var(--text-muted);
   }
 
   @media (max-width: 600px) {
     .skill-row { flex-direction: column; gap: 0.4rem; }
     .skill-cat { flex: 0 0 auto; }
   }
-
-  /* Publications */
-  .publication { margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px dotted var(--border); }
-  .publication:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-  .publication h3 { font-size: 1.05rem; font-family: var(--font-main); font-weight: 500; color: var(--heading-color); margin-bottom: 0.25rem; }
-  .publication .venue { font-style: italic; color: var(--accent); font-size: 0.9rem; display: inline; }
-  .publication .links { display: inline; font-family: var(--font-mono); font-size: 0.85rem; margin-left: 0.4rem; }
 
   /* Projects Grid */
   .grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(2, 1fr); margin-top: 0.5rem; }
@@ -236,7 +235,7 @@
   .card:hover { border-color: var(--text-muted); }
   .card .year { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent); margin-bottom: 0.35rem; }
   .card h3 { font-size: 1.05rem; font-weight: 500; margin-bottom: 0.5rem; color: var(--heading-color); }
-  .card p { color: var(--text); font-size: 0.9rem; margin-bottom: 1rem; flex-grow: 1; display: block; list-style-type: margin-left: 0; }
+  .card p { color: var(--text); font-size: 0.9rem; margin-bottom: 1rem; flex-grow: 1; display: block; list-style-type: none; margin-left: 0; }
   .card .links { font-family: var(--font-mono); font-size: 0.85rem; }
 
   /* Personal Block Aesthetic List */
@@ -252,7 +251,7 @@
     html { scroll-behavior: auto; }
   }
 </style>
-<script src="data.js?v=8"></script>
+<script src="data.js?v=10"></script>
 </head>
 <body>
 
@@ -296,7 +295,7 @@
 <section id="publications">
   <div class="wrap fade-up">
     <h2>Academic Publications</h2>
-    <div id="publications-container"></div>
+    <div class="timeline" id="publications-container"></div>
   </div>
 </section>
 
@@ -426,8 +425,8 @@
     }
 
     window.toggleHidden = function(btn) {
-      const container = btn.closest('.timeline');
-      const hiddenItems = container.querySelectorAll('.hidden-item');
+      const containerSection = btn.closest('section');
+      const hiddenItems = containerSection.querySelectorAll('.hidden-item');
       const isExpanding = btn.textContent === 'Show More';
 
       hiddenItems.forEach(item => {
@@ -454,26 +453,43 @@
         linksHTML += ` <a class="secure-pdf" data-pdf="${item.pdfBase64}" style="cursor: pointer;" title="View PDF">[PDF]</a>`;
       }
       return `
-        <div class="publication">
-          <h3>${item.title}</h3>
+        <div class="timeline-item">
+          <div class="meta" style="margin-bottom: 0.15rem;">
+            <span class="org">${item.title}</span>
+          </div>
+          <h3 style="margin-bottom: 0.2rem; font-size: 0.95rem;">${item.authors}</h3>
           <div>
-            <span class="venue">${item.venue}</span>
-            ${linksHTML ? `<span class="links">${linksHTML.trim()}</span>` : ''}
+            <span style="font-style: italic; color: var(--accent); font-size: 0.9rem;">${item.venue}</span>
+            ${linksHTML ? `<span style="font-family: var(--font-mono); font-size: 0.85rem; margin-left: 0.4rem;">${linksHTML.trim()}</span>` : ''}
           </div>
         </div>
       `;
     }).join('');
     document.getElementById('publications-container').innerHTML = pubHTML;
 
-    const projHTML = d.projects.map(item => `
-      <div class="card">
-        <div class="year">${item.year}</div>
-        <h3>${item.title}</h3>
-        <p style="display: block; list-style-type: none; margin-left: 0;">${item.description}</p>
-        <div class="links"><a class="secure-pdf" data-pdf="${item.linkBase64}" style="cursor: pointer;" title="View PDF">[View PDF]</a></div>
-      </div>
-    `).join('');
+    let projHTML = '';
+    let hasHiddenProj = false;
+    d.projects.forEach((item, index) => {
+      const isHidden = index >= 4;
+      if (isHidden) hasHiddenProj = true;
+      projHTML += `
+        <div class="card ${isHidden ? 'hidden-item' : ''}">
+          <div class="year">${item.year}</div>
+          <h3>${item.title}</h3>
+          <p style="display: block; list-style-type: none; margin-left: 0;">${item.description}</p>
+          <div class="links"><a class="secure-pdf" data-pdf="${item.linkBase64}" style="cursor: pointer;" title="View PDF">[View PDF]</a></div>
+        </div>
+      `;
+    });
     document.getElementById('projects-container').innerHTML = projHTML;
+
+    if (hasHiddenProj) {
+      const btnContainer = document.createElement('div');
+      btnContainer.className = 'timeline-controls';
+      btnContainer.style.marginTop = '1rem';
+      btnContainer.innerHTML = `<button class="btn-toggle expand-btn" onclick="toggleHidden(this)">Show More</button>`;
+      document.getElementById('projects-container').insertAdjacentElement('afterend', btnContainer);
+    }
 
     const personalHTML = d.personal.map(p => `<li>${p}</li>`).join('');
     document.getElementById('personal-container').innerHTML = `
