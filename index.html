@@ -41,8 +41,16 @@
 
   html { scroll-behavior: smooth; }
 
+  html.theme-transition,
+  html.theme-transition *,
+  html.theme-transition *:before,
+  html.theme-transition *:after {
+    transition: background-color 2s ease, color 2s ease, border-color 2s ease, fill 2s ease, stroke 2s ease !important;
+    transition-delay: 0s !important;
+  }
+
   body {
-    background: var(--bg);
+    background-color: var(--bg);
     color: var(--text);
     font-family: var(--font-main);
     font-size: 14.5px;
@@ -65,20 +73,21 @@
 
   a { color: var(--accent); text-decoration: none; transition: color 0.15s ease; }
   a:hover, a:focus-visible { text-decoration: underline; }
-  ::selection { background: var(--accent-dim); color: #fff; }
+  ::selection { background-color: var(--accent-dim); color: #fff; }
 
   .wrap { max-width: 950px; margin: 0 auto; padding: 0 1.25rem; }
 
   nav {
     position: sticky; top: 0; z-index: 10;
-    background: var(--nav-bg); backdrop-filter: blur(6px);
+    background-color: var(--nav-bg); backdrop-filter: blur(6px);
     border-bottom: 1px solid var(--border);
     transition: background-color 0.2s ease, border-color 0.2s ease;
   }
 
   nav .wrap {
     display: flex; justify-content: space-between; align-items: center;
-    height: 3rem; font-size: 0.8rem; overflow-x: auto;
+    min-height: 3rem; padding-top: 0.75rem; padding-bottom: 0.75rem; font-size: 0.8rem;
+    flex-wrap: wrap; gap: 1rem;
   }
 
   nav .brand {
@@ -86,12 +95,12 @@
     font-size: 1.1rem; margin-right: 1.5rem; font-weight: 600; font-style: normal;
   }
 
-  nav .links { display: flex; gap: 1rem; white-space: nowrap; align-items: center; }
+  nav .links { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
   nav .links a { color: var(--text-muted); }
   nav .links a:hover { color: var(--accent); }
 
   .btn-toggle {
-    background: var(--bg-panel);
+    background-color: var(--bg-panel);
     border: 1px solid var(--border);
     color: var(--text-muted);
     cursor: pointer;
@@ -105,7 +114,8 @@
     align-items: center;
     gap: 0.4rem;
   }
-  .btn-toggle:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-toggle:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .btn-toggle:disabled { cursor: not-allowed; opacity: 0.6; }
   .btn-toggle svg { width: 14px; height: 14px; }
 
   section {
@@ -121,13 +131,12 @@
   .fade-up { opacity: 0; transform: translateY(8px); transition: opacity 0.4s ease, transform 0.4s ease; }
   .fade-up.in { opacity: 1; transform: translateY(0); }
 
-  /* About Info Formatting & Two-Column Widget Layout */
   .about-grid { display: grid; grid-template-columns: 1fr 380px; gap: 3rem; align-items: center; }
-  .about-widget-col iframe { width: 100%; height: 480px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg-panel); overflow: hidden; }
+  .about-widget-col iframe { width: 100%; height: 480px; min-height: 480px; border: 1px solid var(--border); border-radius: 6px; background-color: var(--bg-panel); overflow: auto; }
 
   @media (max-width: 768px) {
     .about-grid { grid-template-columns: 1fr; gap: 2rem; }
-    .about-widget-col iframe { height: 440px; }
+    .about-widget-col iframe { height: 600px; min-height: 600px; }
   }
 
   .contact-inline {
@@ -139,18 +148,16 @@
   .contact-sep { color: var(--text-muted); user-select: none; }
   .about-content { font-size: 1.08rem; line-height: 1.6; max-width: 75ch; color: var(--text); }
 
-  /* Footer Contact Formatting */
   .contact-list { display: flex; flex-direction: column; gap: 0.35rem; }
   .contact-list .k { color: var(--text-muted); display: inline-block; width: 6rem; }
 
-  /* General Timeline and Entries */
   .timeline { margin-top: 0.5rem; border-left: 1px solid var(--border); padding-left: 1.25rem; }
   .timeline-item { position: relative; margin-bottom: 1.75rem; }
   .timeline-item:last-child { margin-bottom: 0; }
   .timeline-item::before {
     content: ""; position: absolute; left: -1.5rem; top: 0.5rem;
     width: 8px; height: 8px; border-radius: 50%;
-    background: var(--bg); border: 2px solid var(--accent);
+    background-color: var(--bg); border: 2px solid var(--accent);
   }
 
   .timeline-item .meta {
@@ -167,7 +174,6 @@
   .timeline-item h3 { font-size: 1.05rem; font-weight: 500; margin-bottom: 0.15rem; color: var(--text); }
   .timeline-item h4 { font-size: 0.9rem; font-weight: 400; font-style: italic; color: var(--text-muted); margin-bottom: 0.5rem; }
 
-  /* Bulleted format for all entry descriptions */
   .timeline-item p, .cv-bullets li {
     display: list-item;
     list-style-type: disc;
@@ -178,57 +184,51 @@
   .timeline-item p:last-child, .cv-bullets li:last-child { margin-bottom: 0; }
   .cv-bullets { margin: 0; padding: 0; }
 
-  /* Expandable sections */
   .hidden-item { display: none !important; }
   .timeline-item.revealed { display: block !important; }
   .card.revealed { display: flex !important; }
 
-  .timeline-controls {
-    margin-top: 1.25rem;
-  }
+  .timeline-controls { margin-top: 1.25rem; }
   .expand-btn {
     font-family: var(--font-main);
     font-size: 0.85rem;
     padding: 0.35rem 0.85rem;
     border: 1px solid var(--accent);
     color: var(--heading-color);
-    background: var(--bg-panel);
+    background-color: var(--bg-panel);
     font-weight: 500;
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s ease;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
-  .expand-btn:hover {
-    background: var(--accent);
-    color: var(--bg);
-  }
+  .expand-btn:hover { background-color: var(--accent); color: var(--bg); }
 
-  /* Skills Block - Compact Dictionary Layout */
   .skills-compact { display: flex; flex-direction: column; gap: 0.85rem; }
   .skill-row { display: flex; align-items: baseline; line-height: 1.5; }
   .skill-cat { flex: 0 0 200px; font-weight: 600; color: var(--heading-color); font-size: 0.95rem; }
   .skill-items { flex: 1 1 auto; display: flex; flex-wrap: wrap; gap: 0.35rem; }
   .tech-tag {
-    background: var(--bg-panel); border: 1px solid var(--border);
+    background-color: var(--bg-panel); border: 1px solid var(--border);
     padding: 0.15rem 0.4rem; border-radius: 3px; color: var(--text);
     font-family: var(--font-mono); font-size: 0.82rem; display: inline-block;
     transition: border-color 0.15s ease;
     cursor: default;
   }
-  .tech-tag:hover {
-    border-color: var(--text-muted);
-  }
+  .tech-tag:hover { border-color: var(--text-muted); }
 
   @media (max-width: 600px) {
     .skill-row { flex-direction: column; gap: 0.4rem; }
     .skill-cat { flex: 0 0 auto; }
   }
 
-  /* Projects Grid */
   .grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(2, 1fr); margin-top: 0.5rem; }
   @media (max-width: 650px) { .grid { grid-template-columns: 1fr; } }
   .card {
-    background: var(--bg-panel); border: 1px solid var(--border); border-radius: 4px; padding: 1.25rem;
+    background-color: var(--bg-panel); border: 1px solid var(--border); border-radius: 4px; padding: 1.25rem;
     transition: border-color 0.15s ease; display: flex; flex-direction: column;
   }
   .card:hover { border-color: var(--text-muted); }
@@ -237,12 +237,11 @@
   .card p { color: var(--text); font-size: 0.9rem; margin-bottom: 1rem; flex-grow: 1; display: block; list-style-type: none; margin-left: 0; }
   .card .links { font-family: var(--font-mono); font-size: 0.85rem; }
 
-  /* Personal Block Aesthetic List */
   .personal-list { list-style: none; padding: 0; margin: 0; }
   .personal-list li { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.6rem; color: var(--text); font-size: 0.95rem; }
-  .personal-list li::before { content: ""; display: inline-block; width: 5px; height: 5px; background: var(--accent); }
+  .personal-list li::before { content: ""; display: inline-block; width: 5px; height: 5px; background-color: var(--accent); }
 
-  footer { padding: 3rem 0; border-top: 1px solid var(--border); background: var(--bg-panel); }
+  footer { padding: 3rem 0; border-top: 1px solid var(--border); background-color: var(--bg-panel); }
   footer .fine { margin-top: 2rem; color: var(--text-muted); font-size: 0.75rem; font-family: var(--font-mono); }
 
   @media (prefers-reduced-motion: reduce) {
@@ -265,6 +264,7 @@
       <a href="#skills">Skills</a>
       <a href="#projects">Projects</a>
       <a href="#volunteering">Organisations</a>
+      <a href="#contact">Contact</a>
       <button id="theme-toggle" class="btn-toggle" aria-label="Toggle Dark/Light Mode">
         <svg id="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
         <span id="theme-text">Dark</span>
@@ -364,8 +364,6 @@
             <span class="contact-sep">|</span>
             <a class="secure-link" data-href="${d.about.githubLinkBase64}">${d.about.githubText}</a>
             <span class="contact-sep">|</span>
-            <a class="secure-link" data-href="${d.about.scholarLinkBase64}">${d.about.scholarText}</a>
-            <span class="contact-sep">|</span>
             <a class="secure-pdf" data-pdf="${d.about.resumePdfBase64}" style="cursor: pointer;" title="View PDF Resume">[PDF Resume]</a>
           </div>
           <div class="about-content">
@@ -430,7 +428,7 @@
 
       if (hasHidden) {
         const controls = document.getElementById(controlsId);
-        controls.innerHTML = `<button class="btn-toggle expand-btn" onclick="toggleHidden(this)">Show More</button>`;
+        controls.innerHTML = `<button class="expand-btn" onclick="toggleHidden(this)">Show More</button>`;
         controls.style.display = 'block';
       }
     }
@@ -495,7 +493,7 @@
 
     if (hasHiddenProj) {
       const controls = document.getElementById('proj-controls');
-      controls.innerHTML = `<button class="btn-toggle expand-btn" onclick="toggleHidden(this)">Show More</button>`;
+      controls.innerHTML = `<button class="expand-btn" onclick="toggleHidden(this)">Show More</button>`;
       controls.style.display = 'block';
     }
 
@@ -565,11 +563,21 @@
     updateToggleState(savedTheme);
 
     themeToggleBtn.addEventListener('click', () => {
+      if (themeToggleBtn.disabled) return;
+      themeToggleBtn.disabled = true;
+
+      htmlElement.classList.add('theme-transition');
+
       const currentTheme = htmlElement.getAttribute('data-theme');
       const newTheme = currentTheme === 'light' ? 'dark' : 'light';
       htmlElement.setAttribute('data-theme', newTheme);
       localStorage.setItem('theme', newTheme);
       updateToggleState(newTheme);
+
+      setTimeout(() => {
+        htmlElement.classList.remove('theme-transition');
+        themeToggleBtn.disabled = false;
+      }, 2000);
     });
 
     const items = document.querySelectorAll('.fade-up');

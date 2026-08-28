@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EM Simulation Widget</title>
     <style>
-        /* * Color palette and typography definitions mapping to the host webpage.
-         */
         :root {
             --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
             --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
             --font-serif: "Charter", "Georgia", "Times New Roman", serif;
+        }
+
+        [data-theme="dark"] {
             --bg: #1f1b19;
             --bg-panel: #292421;
             --border: #3d3531;
@@ -19,6 +20,25 @@
             --heading-color: #f2ebe6;
             --accent: #d98253;
             --neg: #8e9296;
+        }
+
+        [data-theme="light"] {
+            --bg: #fbf9f6;
+            --bg-panel: #f2efe9;
+            --border: #dfd8d1;
+            --text: #3d3734;
+            --text-muted: #756a65;
+            --heading-color: #1a1715;
+            --accent: #c45d29;
+            --neg: #8e9296;
+        }
+
+        html.theme-transition,
+        html.theme-transition *,
+        html.theme-transition *:before,
+        html.theme-transition *:after {
+            transition: background-color 2s ease, color 2s ease, border-color 2s ease, fill 2s ease, stroke 2s ease !important;
+            transition-delay: 0s !important;
         }
 
         body {
@@ -30,10 +50,11 @@
             align-items: center;
             margin: 0;
             padding: 10px;
+            transition: background-color 0.2s ease, color 0.2s ease;
         }
 
         .widget {
-            background: var(--bg-panel);
+            background-color: var(--bg-panel);
             border: 1px solid var(--border);
             border-radius: 6px;
             padding: 20px;
@@ -42,6 +63,7 @@
             display: flex;
             flex-direction: column;
             gap: 16px;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
         }
 
         .header {
@@ -50,6 +72,7 @@
             align-items: center;
             border-bottom: 1px solid var(--border);
             padding-bottom: 12px;
+            transition: border-color 0.2s ease;
         }
 
         .title-block {
@@ -65,6 +88,7 @@
             font-size: 1.25rem;
             font-weight: 400;
             line-height: 1.1;
+            transition: color 0.2s ease;
         }
 
         .subtitle {
@@ -73,6 +97,7 @@
             font-size: 0.75rem;
             font-weight: bold;
             text-transform: uppercase;
+            transition: color 0.2s ease;
         }
 
         .primary-btn {
@@ -81,7 +106,7 @@
             padding: 0.35rem 0.85rem;
             border: 1px solid var(--accent);
             color: var(--heading-color);
-            background: var(--bg-panel);
+            background-color: var(--bg-panel);
             font-weight: 500;
             border-radius: 4px;
             cursor: pointer;
@@ -94,12 +119,12 @@
         }
 
         .primary-btn:hover {
-            background: var(--accent);
+            background-color: var(--accent);
             color: var(--bg);
         }
 
         .primary-btn.paused {
-            background: var(--accent);
+            background-color: var(--accent);
             color: var(--bg);
         }
 
@@ -122,8 +147,9 @@
             left: 50px;
             width: 200px;
             height: 200px;
-            background: var(--bg-panel);
+            background-color: var(--bg-panel);
             border: 1px solid var(--border);
+            transition: background-color 0.2s ease, border-color 0.2s ease;
         }
 
         canvas {
@@ -157,6 +183,7 @@
             background: linear-gradient(to top, var(--neg), var(--bg-panel), var(--accent));
             border: 1px solid var(--border);
             border-radius: 2px;
+            transition: border-color 0.2s ease;
         }
 
         .legend-labels {
@@ -167,6 +194,7 @@
             font-family: var(--font-mono);
             font-size: 12.5px;
             color: var(--text-muted);
+            transition: color 0.2s ease;
         }
 
         .controls {
@@ -186,10 +214,11 @@
             font-size: 12.5px;
             color: var(--text-muted);
             text-transform: uppercase;
+            transition: color 0.2s ease;
         }
 
         select {
-            background: var(--bg);
+            background-color: var(--bg);
             color: var(--heading-color);
             border: 1px solid var(--border);
             padding: 4px 8px;
@@ -197,6 +226,7 @@
             font-family: var(--font-main);
             font-size: 12.5px;
             cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
         }
 
         select:focus {
@@ -209,6 +239,12 @@
             accent-color: var(--accent);
         }
 
+        select:disabled, input[type="range"]:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            filter: grayscale(100%);
+        }
+
         .val-display {
             color: var(--heading-color);
             font-weight: 500;
@@ -216,6 +252,7 @@
             font-family: var(--font-mono);
             width: 45px;
             text-align: right;
+            transition: color 0.2s ease;
         }
     </style>
 </head>
@@ -225,7 +262,7 @@
     <div class="header">
         <div class="title-block">
             <h3>TMz Plane Wave</h3>
-            <div class="subtitle">FDTD Scattering off PEC (λ=12 cells)</div>
+            <div class="subtitle">FDTD Scattering off PEC</div>
         </div>
         <button id="playPauseBtn" class="primary-btn">Pause</button>
     </div>
@@ -236,7 +273,7 @@
                 <canvas id="emCanvas" width="200" height="200"></canvas>
             </div>
             <svg class="axes" viewBox="0 0 260 250">
-                <g stroke="var(--border)" stroke-width="1">
+                <g stroke="var(--border)" stroke-width="1" style="transition: stroke 0.2s ease">
                     <line x1="50" y1="210" x2="250" y2="210" />
                     <line x1="50" y1="210" x2="50" y2="10" />
                     <line x1="50" y1="210" x2="50" y2="215" />
@@ -246,18 +283,18 @@
                     <line x1="45" y1="110" x2="50" y2="110" />
                     <line x1="45" y1="10" x2="50" y2="10" />
                 </g>
-                <g fill="var(--text-muted)" font-family="var(--font-mono)" font-size="12.5" text-anchor="middle">
+                <g fill="var(--text-muted)" font-family="var(--font-mono)" font-size="12.5" text-anchor="middle" style="transition: fill 0.2s ease">
                     <text x="50" y="230">-8.3</text>
                     <text x="150" y="230">0</text>
                     <text x="250" y="230">8.3</text>
                 </g>
-                <g fill="var(--text-muted)" font-family="var(--font-mono)" font-size="12.5" text-anchor="end" alignment-baseline="middle">
+                <g fill="var(--text-muted)" font-family="var(--font-mono)" font-size="12.5" text-anchor="end" alignment-baseline="middle" style="transition: fill 0.2s ease">
                     <text x="40" y="210">-8.3</text>
                     <text x="40" y="110">0</text>
                     <text x="40" y="10">8.3</text>
                 </g>
-                <text x="14" y="110" fill="var(--text-muted)" font-family="var(--font-main)" font-size="14" text-anchor="middle" transform="rotate(-90 14 110)">Position Y (λ)</text>
-                <text x="150" y="248" fill="var(--text-muted)" font-family="var(--font-main)" font-size="14" text-anchor="middle">Position X (λ)</text>
+                <text x="14" y="110" fill="var(--text-muted)" font-family="var(--font-main)" font-size="14" text-anchor="middle" transform="rotate(-90 14 110)" style="transition: fill 0.2s ease">Position Y (λ)</text>
+                <text x="150" y="248" fill="var(--text-muted)" font-family="var(--font-main)" font-size="14" text-anchor="middle" style="transition: fill 0.2s ease">Position X (λ)</text>
             </svg>
         </div>
 
@@ -304,37 +341,29 @@
     const speedSlider = document.getElementById('speedSlider');
     const rotSlider = document.getElementById('rotSlider');
 
-    // Domain parameters
-    const N = 200; // Grid spatial resolution $N \times N$
-    const sponge = 30; // Thickness of CPML absorbing boundary layer in cells
-    const sigma_max = 1.0; // Peak conductivity of the CPML layer
+    const N = 200;
+    const sponge = 30;
+    const sigma_max = 1.0;
+    const lambda = 12;
+    const v = 0.5;
+    const omega = (2 * Math.PI * v) / lambda;
 
-    // Wave properties
-    const lambda = 12; // Wavelength in grid cells
-    const v = 0.5; // Phase velocity (Courant stable for 2D Yee grid: v <= 1/sqrt(2))
-    const omega = (2 * Math.PI * v) / lambda; // Angular frequency
-
-    // CPML Coefficients
-    // Implementing Convolutional Perfectly Matched Layers (CPML) for numerical stability and zero boundary reflections
     const bx = new Float32Array(N), cx = new Float32Array(N);
     const bxh = new Float32Array(N), cxh = new Float32Array(N);
     const by = new Float32Array(N), cy = new Float32Array(N);
     const byh = new Float32Array(N), cyh = new Float32Array(N);
 
-    const m_pml = 3; // Polynomial grading order
+    const m_pml = 3;
     for (let i = 0; i < N; i++) {
-        // E-node CPML formulation (aligned with integer grid points)
         let dx = 0;
         if (i < sponge) dx = sponge - i;
         else if (i > N - 1 - sponge) dx = i - (N - 1 - sponge);
         let sig = sigma_max * Math.pow(dx / sponge, m_pml);
         bx[i] = Math.exp(-sig);
         cx[i] = bx[i] - 1.0;
-
         by[i] = bx[i];
         cy[i] = cx[i];
 
-        // H-node CPML formulation (aligned with half-integer grid points)
         let hx = 0;
         let i_half = i + 0.5;
         if (i_half < sponge) hx = sponge - i_half;
@@ -342,15 +371,11 @@
         let sigH = sigma_max * Math.pow(Math.max(0, hx) / sponge, m_pml);
         bxh[i] = Math.exp(-sigH);
         cxh[i] = bxh[i] - 1.0;
-
         byh[i] = bxh[i];
         cyh[i] = cxh[i];
     }
 
-    // FDTD Arrays (Flattened 1D arrays representing 2D Yee grid TMz scalar fields)
     const numCells = N * N;
-
-    // Grid 1: Total Field (contains the scattering object)
     let Ez = new Float32Array(numCells);
     let Hx = new Float32Array(numCells);
     let Hy = new Float32Array(numCells);
@@ -359,7 +384,6 @@
     let psi_Hx_y = new Float32Array(numCells);
     let psi_Hy_x = new Float32Array(numCells);
 
-    // Grid 2: Incident Field (vacuum space used for real-time scattered field derivation)
     let Ez2 = new Float32Array(numCells);
     let Hx2 = new Float32Array(numCells);
     let Hy2 = new Float32Array(numCells);
@@ -368,32 +392,103 @@
     let psi_Hx2_y = new Float32Array(numCells);
     let psi_Hy2_x = new Float32Array(numCells);
 
-    let mask = new Uint8Array(numCells); // Boolean mask defining the Perfect Electric Conductor (PEC) boundary
+    let mask = new Uint8Array(numCells);
     let time = 0;
 
-    // Display Parameters
     let renderMode = 'scattered';
-    const amplitudeMax = 0.45; // Field clamp limit for colormap scaling
+    const amplitudeMax = 0.45;
     let isPaused = false;
     let simSpeed = 0.25;
-    let stepAccumulator = 0; // Fractional step accumulator for smooth sub-integer execution speeds
-    let currentPoly = []; // Stored vertices of the currently rotated object
+    let stepAccumulator = 0;
+    let currentPoly = [];
 
-    // Core RGB color assignments matching host theme
-    const c0 = [41, 36, 33]; // Background
-    const cPos = [217, 130, 83]; // Positive field peak
-    const cNeg = [142, 146, 150]; // Negative field peak
+    let c0 = [41, 36, 33];
+    let cPos = [217, 130, 83];
+    let cNeg = [142, 146, 150];
+    let pecFill_rgb = [31, 27, 25];
+    let pecStroke_rgb = [217, 130, 83];
 
-    /**
-     * Generates the Perfect Electric Conductor (PEC) boundary object inside the grid.
-     * Applies standard affine 2D rotation matrix.
-     */
+    let pecFill = `rgb(${pecFill_rgb[0]}, ${pecFill_rgb[1]}, ${pecFill_rgb[2]})`;
+    let pecStroke = `rgb(${pecStroke_rgb[0]}, ${pecStroke_rgb[1]}, ${pecStroke_rgb[2]})`;
+
+    window.addEventListener('load', () => {
+        try {
+            const parentHtml = window.parent.document.documentElement;
+            if (parentHtml) {
+                setTheme(parentHtml.getAttribute('data-theme'), false);
+                const observer = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        if (mutation.attributeName === 'data-theme') {
+                            setTheme(parentHtml.getAttribute('data-theme'), true);
+                        }
+                    });
+                });
+                observer.observe(parentHtml, { attributes: true });
+            }
+        } catch (e) {}
+    });
+
+    function setTheme(theme, animate) {
+        if (!theme) return;
+        if (animate) document.documentElement.classList.add('theme-transition');
+        document.documentElement.setAttribute('data-theme', theme);
+
+        const target_c0 = theme === 'light' ? [242, 239, 233] : [41, 36, 33];
+        const target_cPos = theme === 'light' ? [196, 93, 41] : [217, 130, 83];
+        const target_cNeg = theme === 'light' ? [142, 146, 150] : [142, 146, 150];
+        const target_pecFill = theme === 'light' ? [251, 249, 246] : [31, 27, 25];
+        const target_pecStroke = theme === 'light' ? [196, 93, 41] : [217, 130, 83];
+
+        if (animate) {
+            let startTime = performance.now();
+            let initial_c0 = [...c0];
+            let initial_cPos = [...cPos];
+            let initial_cNeg = [...cNeg];
+            let initial_pecFill = [...pecFill_rgb];
+            let initial_pecStroke = [...pecStroke_rgb];
+
+            function lerpColor(now) {
+                let t = Math.min((now - startTime) / 2000, 1);
+                let easeT = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+
+                for(let i=0; i<3; i++) {
+                    c0[i] = initial_c0[i] + (target_c0[i] - initial_c0[i]) * easeT;
+                    cPos[i] = initial_cPos[i] + (target_cPos[i] - initial_cPos[i]) * easeT;
+                    cNeg[i] = initial_cNeg[i] + (target_cNeg[i] - initial_cNeg[i]) * easeT;
+                    pecFill_rgb[i] = initial_pecFill[i] + (target_pecFill[i] - initial_pecFill[i]) * easeT;
+                    pecStroke_rgb[i] = initial_pecStroke[i] + (target_pecStroke[i] - initial_pecStroke[i]) * easeT;
+                }
+
+                pecFill = `rgb(${Math.round(pecFill_rgb[0])}, ${Math.round(pecFill_rgb[1])}, ${Math.round(pecFill_rgb[2])})`;
+                pecStroke = `rgb(${Math.round(pecStroke_rgb[0])}, ${Math.round(pecStroke_rgb[1])}, ${Math.round(pecStroke_rgb[2])})`;
+
+                if (isPaused) render();
+
+                if (t < 1) {
+                    requestAnimationFrame(lerpColor);
+                } else {
+                    document.documentElement.classList.remove('theme-transition');
+                }
+            }
+            requestAnimationFrame(lerpColor);
+        } else {
+            c0 = target_c0;
+            cPos = target_cPos;
+            cNeg = target_cNeg;
+            pecFill_rgb = target_pecFill;
+            pecStroke_rgb = target_pecStroke;
+
+            pecFill = `rgb(${pecFill_rgb[0]}, ${pecFill_rgb[1]}, ${pecFill_rgb[2]})`;
+            pecStroke = `rgb(${pecStroke_rgb[0]}, ${pecStroke_rgb[1]}, ${pecStroke_rgb[2]})`;
+            if (isPaused) render();
+        }
+    }
+
     function updateObjectMask(rotationDeg) {
         mask.fill(0);
         const theta = rotationDeg * Math.PI / 180;
-        const cx_coord = 100, cy_coord = 100; // Center coordinate
+        const cx_coord = 100, cy_coord = 100;
 
-        // Base definition of the unrotated asymmetric payload shape
         const basePoly = [
             {x: 0, y: 25},
             {x: 10, y: 12},
@@ -402,13 +497,11 @@
             {x: -10, y: 12}
         ];
 
-        // Apply rotational mapping relative to origin
         currentPoly = basePoly.map(p => ({
             x: cx_coord + p.x * Math.cos(theta) - p.y * Math.sin(theta),
             y: cy_coord + p.x * Math.sin(theta) + p.y * Math.cos(theta)
         }));
 
-        // Point-in-polygon ray casting implementation
         for (let i = 0; i < N; i++) {
             for (let j = 0; j < N; j++) {
                 let inside = false;
@@ -423,15 +516,44 @@
         }
     }
 
+    function handleWheelScroll(e, element, callback, multiplier = 1) {
+        e.preventDefault();
+        if (element.disabled) return;
+
+        const step = (parseFloat(element.step) || 1) * multiplier;
+        const direction = e.deltaY < 0 ? 1 : -1;
+
+        let newValue = parseFloat(element.value) + (direction * step);
+        newValue = Math.max(parseFloat(element.min), Math.min(parseFloat(element.max), newValue));
+
+        element.value = newValue;
+        callback({ target: element });
+    }
+
     rotSlider.addEventListener('input', (e) => {
         document.getElementById('rotVal').innerText = e.target.value + '°';
         updateObjectMask(parseFloat(e.target.value));
         if (isPaused) render();
     });
 
+    rotSlider.addEventListener('wheel', (e) => {
+        handleWheelScroll(e, rotSlider, (ev) => {
+            document.getElementById('rotVal').innerText = ev.target.value + '°';
+            updateObjectMask(parseFloat(ev.target.value));
+            if (isPaused) render();
+        }, 3);
+    });
+
     speedSlider.addEventListener('input', (e) => {
         simSpeed = parseFloat(e.target.value);
         document.getElementById('speedVal').innerText = simSpeed + 'x';
+    });
+
+    speedSlider.addEventListener('wheel', (e) => {
+        handleWheelScroll(e, speedSlider, (ev) => {
+            simSpeed = parseFloat(ev.target.value);
+            document.getElementById('speedVal').innerText = simSpeed + 'x';
+        }, 1);
     });
 
     fieldSelect.addEventListener('change', (e) => {
@@ -443,25 +565,22 @@
         isPaused = !isPaused;
         playPauseBtn.textContent = isPaused ? 'Play' : 'Pause';
         playPauseBtn.classList.toggle('paused', isPaused);
+
+        fieldSelect.disabled = isPaused;
+        speedSlider.disabled = isPaused;
+        rotSlider.disabled = isPaused;
     });
 
-    // Initial boundary definition
     updateObjectMask(45);
     const imgData = ctx.createImageData(N, N);
 
-    /**
-     * Core time-marching algorithm based on the explicit Finite Difference Time Domain (FDTD) method.
-     * Uses Yee-grid formulation with Convolutional Perfectly Matched Layers (CPML) for robust numerical stability.
-     */
     function step() {
-        // Step 1: Magnetic Field (Hx, Hy) Updates
         for (let j = 0; j < N - 1; j++) {
             for (let i = 0; i < N - 1; i++) {
                 let idx = i + j * N;
                 let idx_x = (i + 1) + j * N;
                 let idx_y = i + (j + 1) * N;
 
-                // Total Field H-updates
                 let dEz_y = Ez[idx_y] - Ez[idx];
                 psi_Hx_y[idx] = byh[j] * psi_Hx_y[idx] + cyh[j] * dEz_y;
                 Hx[idx] -= v * (dEz_y + psi_Hx_y[idx]);
@@ -470,7 +589,6 @@
                 psi_Hy_x[idx] = bxh[i] * psi_Hy_x[idx] + cxh[i] * dEz_x;
                 Hy[idx] += v * (dEz_x + psi_Hy_x[idx]);
 
-                // Incident Field H-updates
                 let dEz2_y = Ez2[idx_y] - Ez2[idx];
                 psi_Hx2_y[idx] = byh[j] * psi_Hx2_y[idx] + cyh[j] * dEz2_y;
                 Hx2[idx] -= v * (dEz2_y + psi_Hx2_y[idx]);
@@ -481,14 +599,12 @@
             }
         }
 
-        // Step 2: Electric Field (Ez) Updates
         for (let j = 1; j < N; j++) {
             for (let i = 1; i < N; i++) {
                 let idx = i + j * N;
                 let idx_x = (i - 1) + j * N;
                 let idx_y = i + (j - 1) * N;
 
-                // Total Field E-updates
                 let dHy_x = Hy[idx] - Hy[idx_x];
                 let dHx_y = Hx[idx] - Hx[idx_y];
 
@@ -497,7 +613,6 @@
 
                 Ez[idx] += v * (dHy_x + psi_Ez_x[idx] - dHx_y - psi_Ez_y[idx]);
 
-                // Incident Field E-updates
                 let dHy2_x = Hy2[idx] - Hy2[idx_x];
                 let dHx2_y = Hx2[idx] - Hx2[idx_y];
 
@@ -508,8 +623,6 @@
             }
         }
 
-        // Step 3: Plane Wave Source Injection
-        // Propagating in the +x direction
         const src_val = 1.0 * Math.sin(omega * time);
         for (let j = 1; j < N - 1; j++) {
             let idx = 32 + j * N;
@@ -517,7 +630,6 @@
             Ez2[idx] += src_val;
         }
 
-        // Step 4: Enforce Hard PEC Boundary Conditions (Tangential E-field vanishes)
         for (let idx = 0; idx < numCells; idx++) {
             if (mask[idx]) Ez[idx] = 0;
         }
@@ -525,22 +637,16 @@
         time++;
     }
 
-    /**
-     * Map scalar field amplitudes to spatial view array.
-     */
     function render() {
         const data = imgData.data;
         for (let i = 0; i < N; i++) {
             for (let j = 0; j < N; j++) {
                 let idx = i + j * N;
-                // Invert Y axis logically to place the Cartesian origin at standard bottom-left.
                 let screen_y = N - 1 - j;
                 let px = (i + screen_y * N) * 4;
 
-                // Pure scattered field derived by linear superposition: E_scat = E_tot - E_inc
                 let val = renderMode === 'scattered' ? (Ez[idx] - Ez2[idx]) : Ez[idx];
 
-                // Bipolar RGB channel linear interpolation
                 if (val > 0) {
                     let t = Math.min(1, val / amplitudeMax);
                     data[px] = c0[0] + (cPos[0] - c0[0]) * t;
@@ -556,10 +662,8 @@
             }
         }
 
-        // Flush buffer to graphic context
         ctx.putImageData(imgData, 0, 0);
 
-        // Vector path rendering for sharp anti-aliased representation of the geometric outline over the pixelated simulation mask
         ctx.beginPath();
         for (let k = 0; k < currentPoly.length; k++) {
             let px = currentPoly[k].x;
@@ -569,25 +673,20 @@
         }
         ctx.closePath();
 
-        ctx.fillStyle = '#1f1b19';
+        ctx.fillStyle = pecFill;
         ctx.fill();
         ctx.lineWidth = 1.5;
-        ctx.strokeStyle = '#d98253';
+        ctx.strokeStyle = pecStroke;
         ctx.stroke();
     }
 
-    // Fast-forward simulation dynamically prior to visual mount (pre-loading wave incidence)
     for(let i = 0; i < 75; i++) {
         step();
     }
     render();
 
-    /**
-     * Canvas execution loop synced with browser refresh rate.
-     */
     function animate() {
         if (!isPaused) {
-            // Evaluates fractionary updates allowing continuous adjustable velocity ratios
             stepAccumulator += simSpeed;
             let stepsToTake = Math.floor(stepAccumulator);
             stepAccumulator -= stepsToTake;
