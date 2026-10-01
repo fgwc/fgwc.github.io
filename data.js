@@ -2,7 +2,7 @@
 const portfolioData = {
   about: {
     name: "Fangwei Chang",
-    roleDescription: "Final year PhD Candidate in Electrical and Computer Engineering at the University of Toronto. Experience in electromagnetics, FEM tools (COMSOL, HFSS, etc), numeric simulation methods (FDTD, MoM, etc), and RF design/measurement.<br><br>Actively looking for full-time opportunities!",
+    roleDescription: "Final year PhD Candidate in Electrical Engineering/Electromagnetics at the University of Toronto. Experience in electromagnetics, FEM tools (COMSOL, HFSS, etc), numeric simulation methods (FDTD, MoM, etc), and RF design/measurement.<br><br>Actively looking for full-time opportunities!",
     emailBase64: "ZmFuZ3dlaS5jaGFuZ0BtYWlsLnV0b3JvbnRvLmNh",
     linkedinText: "linkedin.com/in/fangwei-c",
     linkedinLinkBase64: "aHR0cHM6Ly9saW5rZWRpbi5jb20vaW4vZmFuZ3dlaS1j",
@@ -16,7 +16,7 @@ const portfolioData = {
     {
       institution: "University of Toronto",
       period: "Sep 2021 - Present",
-      degree: "PhD Candidate, Electrical and Computer Engineering (ECE)",
+      degree: "PhD Candidate, Electrical Engineering/Electromagnetics",
       location: "Toronto, Canada",
       content: `
         <ul class="cv-bullets">
@@ -31,11 +31,11 @@ const portfolioData = {
     {
       institution: "University of Toronto",
       period: "Sep 2019 - Sep 2021",
-      degree: "Master of Applied Science (MASC), Electrical and Computer Engineering (ECE)",
+      degree: "Master of Applied Science (MASc), Electrical Engineering/Electromagnetics",
       location: "Toronto, Canada",
       content: `
         <ul class="cv-bullets">
-          <li>Thesis: Shifted-beam Array of Coils for Highly Focal Transcranial Magnetic Stimulation</li>
+          <li>Received Honorable Mention, 2021 IEEE AP-S/URSI Student Paper Competition.</li>
         </ul>
       `
     },
@@ -46,21 +46,26 @@ const portfolioData = {
       location: "Toronto, Canada",
       content: `
         <p>Dean's List Award recipient 2016-2018.</p>
+        <ul class="cv-bullets">
+          <li>Received New College Council In-Course Scholarship 2016</li>
+        </ul>
       `
     }
   ],
   skills: [
     { category: "Programming Languages", items: "Python, MATLAB, C++, Java" },
-    { category: "Simulation Tools", items: "COMSOL Multiphysics, Ansys Electronics Desktop (AEDT), Ansys HFSS, Ansys Icepak, Keysight Advanced Design System (ADS)" },
-    { category: "Modeling/Numerical Methods", items: "Finite-element method (FEM), finite-difference time-domain (FDTD), method of moments (MoM), reduced order modeling/surrogate modeling, multiphysics modeling, optimization" },
-    { category: "AI/ML Tools", items: "Tensorflow, Keras, PyTorch" },
-    { category: "Software Tools", items: "Anaconda, Jupyter Notebook, PyCharm, VSCode, LaTeX, Git, high performance computing (HPC)" },
-    { category: "Subject Areas", items: "Electromagnetics, metamaterials, physics, wireless power transfer" },
-    { category: "Hardware", items: "Radiofrequency (RF) design, RF equipment, antenna design/measurements, printed circuit board (PCB) prototyping, laser etching, 3-D printing, composite materials, machining" }
+    { category: "Simulation Tools", items: "COMSOL Multiphysics, Ansys HFSS, Ansys Icepak" },
+    { category: "Modeling/Numerical Methods", items: "Finite-element method (FEM), finite-difference time-domain (FDTD), integral equation methods/method of moments (MoM), computational electromagnetics (CEM), thermal simulation, multiphysics simulation, reduced order modeling, surrogate modeling, numeric optimization, computer-aided design (CAD)" },
+    { category: "AI/ML Tools", items: "Tensorflow, Keras, PyTorch, Claude Code" },
+    { category: "Software Tools", items: "Anaconda, Jupyter Notebook, PyCharm, VSCode, Git, Linux, Bash, high performance computing (HPC), LaTeX, Microsoft Office" },
+    { category: "Analog Design/EDA", items: "Cadence Innovus, Cadence Genus, RTL, TCL, Keysight ADS, KiCad" },
+    { category: "RF/Electronics", items: "Radiofrequency (RF) design, RF equipment, oscilloscope, network analyzer, spectrum analyzer, waveform generator, antenna design, antenna measurement, printed circuit board (PCB) prototyping, digital integrated circuits (IC), laser PCB etching" },
+    { category: "Manufacturing/Other", items: "3-D printing, composite materials, machining" },
+    { category: "Subject Areas", items: "Electromagnetics, physics, metamaterials, wireless power" }
   ],
   experience: [
     {
-      organization: "Synopsys: Electronics, Simulation, and Optics Unit",
+      organization: "Ansys (part of Synopsys): Electronics, Simulation, and Optics Unit",
       period: "May 2025 - Apr 2026",
       title: "Research & Development Intern",
       location: "Remote, Canada",
@@ -120,8 +125,16 @@ const portfolioData = {
       title: "Wireless Power Transfer Using a Cavity-Enclosed Impedance Metawire Structure",
       authors: "<b>F. Chang</b> and G. V. Eleftheriades",
       venue: "2026 IEEE International Symposium on Antennas and Propagation, Detroit, United States",
-      links: [],
+      links: [
+        { label: "link", urlBase64: "aHR0cHM6Ly9pZWVleHBsb3JlLmllZWUub3JnL2Fic3RyYWN0L2RvY3VtZW50LzExNjc1NTQ4" }
+      ],
       pdfBase64: "cHVibGljYXRpb25zL1dQVF9DYXZpdHktRW5jbG9zZWQucGRm"
+    },
+    {
+      title: "Physics-Informed Adaptive Model Calibration Using Operating Regime Detection System for Multiphysics Simulations",
+      authors: "M. Vohra, S. Asgari, and <b>F. Chang</b>",
+      venue: "U.S. Patent Application, assigned to Synopsys Inc. (in progress, 2026)",
+      links: []
     },
     {
       title: "An Aperiodic Sub-Wavelength Dipole Structure for Enhancing Near-Field Wireless Power Transfer",
@@ -209,7 +222,7 @@ const portfolioData = {
       title: "Social Events Officer",
       content: `
         <ul class="cv-bullets">
-          <li>Organized monthly social and networking events for Electrical and Computer Engineering Graduate Student Society (ECEGSS) at the University of Toronto. Elected position.</li>
+          <li>Organized monthly social and networking events for Electrical Engineering/Electromagnetics Graduate Student Society (ECEGSS) at the University of Toronto. Elected position.</li>
         </ul>
       `
     },

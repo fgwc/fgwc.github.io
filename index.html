@@ -260,7 +260,7 @@
       <a href="#about">About</a>
       <a href="#education">Education</a>
       <a href="#experience">Experience</a>
-      <a href="#publications">Publications</a>
+      <a href="#publications">Publications & Patents</a>
       <a href="#skills">Skills</a>
       <a href="#projects">Projects</a>
       <a href="#volunteering">Organisations</a>
@@ -294,7 +294,7 @@
 
 <section id="publications">
   <div class="wrap fade-up">
-    <h2>Academic Publications</h2>
+    <h2>Academic Publications and Patents</h2>
     <div class="timeline" id="publications-container"></div>
   </div>
 </section>
@@ -482,7 +482,6 @@
       if (isHidden) hasHiddenProj = true;
       projHTML += `
         <div class="card ${isHidden ? 'hidden-item' : ''}">
-          <div class="year">${item.year}</div>
           <h3>${item.title}</h3>
           <p style="display: block; list-style-type: none; margin-left: 0;">${item.description}</p>
           <div class="links"><a class="secure-pdf" data-pdf="${item.linkBase64}" title="View PDF">[View PDF]</a></div>
